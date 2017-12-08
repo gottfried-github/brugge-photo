@@ -4,6 +4,105 @@ html, body {
   padding: 0px;
 }
 
+body {
+  font-size: 16px;
+}
+
+/*----------------------------------*/
+
+@font-face {
+  font-family: SourceSansPro;
+  src: url('SourceSansPro-Regular.ttf');
+
+  font-family: LibreBodoni;
+  src: url('LibreBodoni-Regular.ttf'),
+    url('LibreBodoni-Bold.ttf');
+
+  /*
+  font-weight: bold;
+  */
+}
+
+h1 {
+  font-family: LibreBodoni;
+  font-weight: 400;
+  font-size: 2em;
+  text-align: center;
+
+  /*
+  margin-top: 350px;
+  margin-bottom: 350px;
+  */
+
+}
+
+p {
+  font-family: SourceSansPro;
+  text-align: center;
+
+  /*
+  font-size: 0.98em;
+  */
+}
+/*----------------------------------*/
+
+section {
+  margin-top: 50px;
+  margin-bottom: 50px;
+}
+
+.alignleft {
+  float: left;
+}
+
+.info {
+  margin-left: 120px;
+  margin-right: 120px;
+}
+
+.info .alignleft {
+  max-width: 50%;
+}
+
+.info h1, .info p {
+  text-align: left;
+
+  margin-left: 25px;
+  margin-right: 25px;
+}
+
+.clearfloat {
+  clear: left;
+}
+
+.frontal {
+
+  padding-top: 150px;
+  padding-bottom: 150px;
+  /*
+  background-color: grey;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  */
+}
+
+.photos {
+  padding-top: 50px;
+  padding-bottom: 50px;
+}
+
+.frontal p {
+  margin-left: 250px;
+  margin-right: 250px;
+}
+
+@media (max-width: 1050px) {
+  .frontal {
+    padding-top: 120px;
+    padding-bottom: 120px;
+  }
+}
 /*----------------------------------*/
 /*
   todo: flexbox prefixes and other cross browser related things (check out modernizr comments on flexbox);
