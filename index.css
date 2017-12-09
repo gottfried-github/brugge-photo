@@ -12,7 +12,8 @@ body {
 
 @font-face {
   font-family: SourceSansPro;
-  src: url('SourceSansPro-Regular.ttf');
+  src: url('SourceSansPro-Regular.ttf'),
+    url('SourceSansPro-Light.ttf');
 
   font-family: LibreBodoni;
   src: url('LibreBodoni-Regular.ttf'),
@@ -30,8 +31,8 @@ h1 {
   text-align: center;
 
   /*
-  margin-top: 350px;
-  margin-bottom: 350px;
+  margin-top: 12px;
+  margin-bottom: 12px;
   */
 
 }
@@ -44,6 +45,58 @@ p {
   font-size: 0.98em;
   */
 }
+
+/*----------------------------------*/
+/*
+
+.common,
+*/
+
+section.contact {
+  box-sizing: border-box;
+  width: 100%;
+  margin: 25px auto;
+  padding: 0px 25px;
+}
+
+.contact-form input, .contact-form textarea, .contact-form button {
+  display: block;
+  width: 100%;
+  min-width: 0px;
+
+  background: none;
+  border: none;
+  padding: 0px;
+  margin: 0px;
+  background-color: grey;
+}
+
+.contact-form {
+  width: 100%;
+  margin: auto;
+  max-width: 350px;
+  /*
+  padding: 0px 25px;
+  display: flex;
+  flex-direction: column;
+
+  height: 600px;
+  */ }
+
+.contact-form input {
+  height: 35px;
+  background-color: #f2f2f2; }
+
+.contact-form textarea {
+  resize: none;
+  height: 250px;
+  background-color: #f2f2f2; }
+
+.contact-form button {
+  height: 35px;
+  background-color: #f2f2f2; }
+
+
 /*----------------------------------*/
 
 section {
@@ -51,28 +104,61 @@ section {
   margin-bottom: 50px;
 }
 
-.alignleft {
-  float: left;
+#menu {
+  position: fixed;
+  bottom: 0px;
+  width: 100%;
+  z-index: 1;
+
+  text-align: center;
+
+  padding-top: 25px;
+  padding-bottom: 25px;
+
+  background-color: rgba(245,245,245,0.7);
+  /*
+  padding-left: 50px;
+  */
 }
 
-.info {
-  margin-left: 120px;
-  margin-right: 120px;
+#menu div {
+  margin: auto;
 }
 
-.info .alignleft {
-  max-width: 50%;
-}
-
-.info h1, .info p {
-  text-align: left;
-
+#menu span {
+  font-family: LibreBodoni;
+  font-size: 1.1em;
   margin-left: 25px;
   margin-right: 25px;
+  /*
+  margin-top: 20px;
+  margin-bottom: 20px;
+  */
 }
 
-.clearfloat {
-  clear: left;
+#menu path {
+  fill:none;
+  fill-rule:evenodd;
+  stroke-width:4.05546093;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  stroke-miterlimit:4;
+  stroke-dasharray:none;
+  stroke-opacity:1;
+  stroke: black; /* #d4d4f9 */
+  /*
+  ---------------------
+  default values:
+  ---------------------
+  */
+}
+
+#menu svg {
+  background-color: rgba(255, 255, 255, 0); /* possibly, fill */
+  margin: auto;
+  /*
+  box-shadow: $shadow;
+  */
 }
 
 .frontal {
@@ -87,14 +173,74 @@ section {
   */
 }
 
-.photos {
-  padding-top: 50px;
-  padding-bottom: 50px;
+.frontal h1 {
+  font-size: 3em;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .frontal p {
   margin-left: 250px;
   margin-right: 250px;
+  line-height: 25px;
+}
+
+.alignleft {
+  float: left;
+}
+
+.info {
+  margin-left: 120px;
+  margin-right: 120px;
+  /*
+  background-color: grey;
+  */
+}
+
+.info .alignleft {
+  max-width: 50%;
+  height: 500px;
+  line-height: 500px;
+}
+
+.info span {
+  display: inline-block;
+  vertical-align: middle;
+  line-height: normal;
+}
+
+.info h1, .info p {
+  text-align: left;
+
+  margin-left: 25px;
+  margin-right: 25px;
+}
+
+.info h1 {
+  font-size: 1.5em;
+  font-family: SourceSansPro;
+  font-weight: bold;
+
+  margin-bottom: 10px;
+}
+
+.info p {
+  line-height: 21px;
+  margin-top: 10px;
+  margin-bottom: 50px;
+  font-weight: lighter;
+  /*
+  font-size: 0.97em;
+  */
+}
+
+.clearfloat {
+  clear: left;
+}
+
+.photos {
+  padding-top: 50px;
+  padding-bottom: 50px;
 }
 
 @media (max-width: 1050px) {
@@ -102,6 +248,13 @@ section {
     padding-top: 120px;
     padding-bottom: 120px;
   }
+
+  .info .alignleft {
+    height: 800px;
+    line-height: 800px;
+    margin-top: -100px;
+  }
+
 }
 /*----------------------------------*/
 /*
