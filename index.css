@@ -117,7 +117,6 @@ section {
 }
 
 #menu {
-  opacity: 0;
   position: fixed;
   bottom: 0px;
   width: 100%;
@@ -128,6 +127,7 @@ section {
 
   background-color: rgba(245,245,245,0.7);
   /*
+  opacity: 0;
   text-align: center;
   padding-left: 50px;
   */
@@ -378,22 +378,22 @@ address {
   text-align: center;
 }
 
-#sitemap {
-  position: absolute;
-  bottom: 0px;
-  width: 100%;
-  padding-top: 25px;
-  padding-bottom: 25px;
+.endinf {
+  margin-top: 15px;
+}
+
+.sign {
+  font-family: LibreBodoni;
+  font-weight: 400;
   text-align: center;
 }
 
-#sitemap span {
-  font-family: LibreBodoni;
-  font-size: 1em;
-  margin-left: 15px;
-  margin-right: 15px;
+.rights {
+  font-size: 0.8em;
+  text-align: center;
   /*
-  margin-top: 20px;
-  margin-bottom: 20px;
+  position: absolute;
+  width: 100%;
+  bottom: 0px;
   */
 }
