@@ -48,8 +48,7 @@ p {
 
 /*----------------------------------*/
 /*
-
-.common,
+contact us
 */
 
 section.contact {
@@ -57,6 +56,18 @@ section.contact {
   width: 100%;
   margin: 25px auto;
   padding: 0px 25px;
+}
+
+.contact .alignleft {
+  max-width: 50%;
+  width: 50%;
+}
+
+.contact .alignleft h1, .contact .alignleft p {
+  text-align: left;
+
+  margin-left: 25px;
+  margin-right: 25px;
 }
 
 .contact-form input, .contact-form textarea, .contact-form button {
@@ -72,11 +83,12 @@ section.contact {
 }
 
 .contact-form {
+  box-sizing: border-box;
   width: 100%;
+  max-width: 450px;
   margin: auto;
-  max-width: 350px;
-  /*
   padding: 0px 25px;
+  /*
   display: flex;
   flex-direction: column;
 
@@ -105,18 +117,18 @@ section {
 }
 
 #menu {
+  opacity: 0;
   position: fixed;
   bottom: 0px;
   width: 100%;
   z-index: 1;
-
-  text-align: center;
 
   padding-top: 25px;
   padding-bottom: 25px;
 
   background-color: rgba(245,245,245,0.7);
   /*
+  text-align: center;
   padding-left: 50px;
   */
 }
@@ -126,6 +138,8 @@ section {
 }
 
 #menu span {
+  display: block;
+  float: left;
   font-family: LibreBodoni;
   font-size: 1.1em;
   margin-left: 25px;
@@ -139,7 +153,7 @@ section {
 #menu path {
   fill:none;
   fill-rule:evenodd;
-  stroke-width:4.05546093;
+  stroke-width:2;
   stroke-linecap:round;
   stroke-linejoin:round;
   stroke-miterlimit:4;
@@ -147,17 +161,31 @@ section {
   stroke-opacity:1;
   stroke: black; /* #d4d4f9 */
   /*
-  ---------------------
-  default values:
-  ---------------------
+  stroke-width:4.05546093;
   */
 }
 
 #menu svg {
+  display: inline;
   background-color: rgba(255, 255, 255, 0); /* possibly, fill */
-  margin: auto;
   /*
+  margin: auto;
   box-shadow: $shadow;
+  */
+}
+
+#menu svg {
+  position: absolute;
+  right: 30px;
+
+  height: 23px;
+  width: 25px;
+  /*
+  background-color: black;
+  display: inline-block;
+  position: absolute;
+  margin: 25px 0px;
+  padding: 25px 0px;
   */
 }
 
@@ -335,5 +363,37 @@ section {
   min-width: 0px;
   width: 125px;
   min-width: 50%;
+  */
+}
+
+/*----------------------------------*/
+
+footer {
+  position: relative;
+  padding: 150px 0px;
+  background-color: grey;
+}
+
+address {
+  text-align: center;
+}
+
+#sitemap {
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
+  padding-top: 25px;
+  padding-bottom: 25px;
+  text-align: center;
+}
+
+#sitemap span {
+  font-family: LibreBodoni;
+  font-size: 1em;
+  margin-left: 15px;
+  margin-right: 15px;
+  /*
+  margin-top: 20px;
+  margin-bottom: 20px;
   */
 }
