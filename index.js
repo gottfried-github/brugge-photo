@@ -63,7 +63,6 @@ var Slider = {
     this.slideUrls.push(this.slideUrls.shift());
     this.slideUrls.push(this.slideUrls.shift());
 
-    this.subscribeToggle();
     var self = this;
     window.setTimeout(function() {
       self.slide();
@@ -71,13 +70,6 @@ var Slider = {
   },
   slide: function() {
     var self = this;
-    // var cb = function(callback) {
-    //   window.setTimeout(function() {
-    //      console.log(self)
-    //      self.doSlide(top, bottom, callback)
-    //    }, 1500)
-    //   }
-    // }
     this.doSlide(this.stack.top, this.stack.bottom, function(top, bottom, cb) {
      window.setTimeout(function() {
        console.log(self)
