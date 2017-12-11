@@ -547,6 +547,28 @@ home page
   */
 }
 
+@media (max-width: 650px) {
+  .grid-item {
+    width: 100%;
+    height: 550px;
+  }
+
+  .grid-item.wide {
+    height: 375px;
+    /*
+    */
+  }
+
+  .item-content {
+    margin: auto;
+  }
+
+  .wide .item-content {
+    width: auto;
+    height: 100%;
+  }
+}
+
 /*----------------------------------*/
 
 /*
