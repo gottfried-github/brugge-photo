@@ -55,7 +55,27 @@ var Slider = {
     'photos/21_20101122202029_1047854_large.jpg',
     'photos/21_20131213163327_3929318_large.jpg'
   ],
-  init: function(period) {
+  slideUrlsNarrow: [
+    'photos/01-21_20101122172143_1047015_large.jpg',
+    'photos/03-21_20101122171701_1046978_large.jpg',
+    'photos/04-21_20101122172201_1047019_large.jpg',
+    'photos/05-21_20101122172138_1047013_large.jpg',
+    'photos/10-21_20101122171806_1046992_large.jpg'
+  ],
+  mobile: false,
+  updDevice: function(width) {
+    width = parseInt(width);
+    if (width < 650) {
+      if (!this.mobile) {
+        this.mobile = true;
+      }
+    } else if (width > 650) {
+      if (this.mobile) {
+        this.mobile = false;
+      }
+    }
+  },
+  init: function(period, opts) {
     this.period = period;
     this.slots.a.addClass('ztop');
     this.slots.a.addClass('transition');
@@ -64,14 +84,24 @@ var Slider = {
     this.slideUrls.push(this.slideUrls.shift());
 
     var self = this;
-    window.setTimeout(function() {
+    if (opts && opts.adaptToMobile) {
+      if (parseInt($(window).width()) < 650) {
+        this.mobile = true;
+      };
+
+      $(window).resize(function() {
+        self.updDevice($(window).width());
+      })
+    }
+
+    this.timeoutId = window.setTimeout(function() {
       self.slide();
     }, self.period);
   },
   slide: function() {
     var self = this;
     this.doSlide(this.stack.top, this.stack.bottom, function(top, bottom, cb) {
-     window.setTimeout(function() {
+     this.timeoutId = window.setTimeout(function() {
        console.log(self)
        console.log(this)
          self.doSlide(top, bottom, cb)
@@ -94,9 +124,10 @@ var Slider = {
       $(this).removeClass('transparent');
       $(this).off('transitionend');
 
-      var image = self.slideUrls.shift();
+      var urls = (self.mobile) ? self.slideUrlsNarrow : self.slideUrls;
+      var image = urls.shift();
       $(this).css('background-image', 'url('+ image +')');
-      self.slideUrls.push(image);
+      urls.push(image);
       console.log(cb)
       cb(bottom, top, cb)
       // self.stack.top = bottom;
@@ -113,7 +144,7 @@ var Slider = {
 function initIndex() {
   // Index.gridSetup();
   Index.modernize();
-  Slider.init(2850);
+  Slider.init(2850, {adaptToMobile: true});
 }
 
 $(document).ready(initIndex)
