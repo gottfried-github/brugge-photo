@@ -50,10 +50,10 @@ var Slider = {
   },
   slideUrls: [
     'photos/02-21_20140108170653_3959947_large.jpg',
+    'photos/21_20131213163327_3929318_large.jpg',
     'photos/21_20131213163318_3929317_large.jpg',
     'photos/21_20131213163343_3929319_large.jpg',
-    'photos/21_20101122202029_1047854_large.jpg',
-    'photos/21_20131213163327_3929318_large.jpg'
+    'photos/21_20101122202029_1047854_large.jpg'
   ],
   slideUrlsNarrow: [
     'photos/01-21_20101122172143_1047015_large.jpg',
@@ -62,26 +62,41 @@ var Slider = {
     'photos/05-21_20101122172138_1047013_large.jpg',
     'photos/10-21_20101122171806_1046992_large.jpg'
   ],
+  setUrls: function() {
+    if (this.mobile) {
+      this.urls = this.slideUrlsNarrow;
+    } else if (!this.mobile) {
+      this.urls = this.slideUrls;
+    };
+  },
   mobile: false,
   updDevice: function(width) {
     width = parseInt(width);
     if (width < 650) {
       if (!this.mobile) {
         this.mobile = true;
+        this.setUrls();
       }
     } else if (width > 650) {
       if (this.mobile) {
         this.mobile = false;
+        this.setUrls();
       }
     }
   },
+  setupTimeout: function(fn) {
+   this.timeoutFn = fn;
+   this.timeoutId = window.setTimeout(this.timeoutFn, this.period);
+  },
+  // resetTimeout: function() {
+  //   window.clearTimeout(this.timeoutId);
+  //   this.timeoutId = window.setTimeout(this.timeoutFn, this.period);
+  // },
   init: function(period, opts) {
     this.period = period;
     this.slots.a.addClass('ztop');
     this.slots.a.addClass('transition');
 
-    this.slideUrls.push(this.slideUrls.shift());
-    this.slideUrls.push(this.slideUrls.shift());
 
     var self = this;
     if (opts && opts.adaptToMobile) {
@@ -94,18 +109,22 @@ var Slider = {
       })
     }
 
-    this.timeoutId = window.setTimeout(function() {
+    this.setUrls();
+    this.urls.push(this.urls.shift());
+    this.urls.push(this.urls.shift());
+
+    this.setupTimeout(function() {
       self.slide();
-    }, self.period);
+    })
   },
   slide: function() {
     var self = this;
     this.doSlide(this.stack.top, this.stack.bottom, function(top, bottom, cb) {
-     this.timeoutId = window.setTimeout(function() {
+     self.setupTimeout(function() {
        console.log(self)
        console.log(this)
          self.doSlide(top, bottom, cb)
-     }, self.period)
+     });
     })
   },
   doSlide: function(top, bottom, cb) {
@@ -124,10 +143,10 @@ var Slider = {
       $(this).removeClass('transparent');
       $(this).off('transitionend');
 
-      var urls = (self.mobile) ? self.slideUrlsNarrow : self.slideUrls;
-      var image = urls.shift();
+      // var urls = (self.mobile) ? self.slideUrlsNarrow : self.slideUrls;
+      var image = self.urls.shift();
       $(this).css('background-image', 'url('+ image +')');
-      urls.push(image);
+      self.urls.push(image);
       console.log(cb)
       cb(bottom, top, cb)
       // self.stack.top = bottom;

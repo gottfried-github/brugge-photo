@@ -97,6 +97,15 @@ section {
   margin-left: 25px;
   margin-right: 25px;
   color: black;
+
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
+
   /*
   color: #ffdd55ff;
   box-shadow: 10px 5px 5px red;
@@ -217,7 +226,7 @@ home page
 }
 
 .photo-bottom {
-  background-image: url('photos/21_20131213163318_3929317_large.jpg');
+  background-image: url('photos/21_20131213163327_3929318_large.jpg');
 }
 
 .photoSlides .logo {
@@ -575,7 +584,7 @@ home page
   }
 
   footer {
-    padding: 75px 0px;
+    padding: 75px 25px;
     /*
     padding-bottom: 75px;
     */
@@ -605,6 +614,11 @@ home page
   .wide .item-content {
     width: auto;
     height: 100%;
+  }
+
+  .about p {
+    margin-left: 25px;
+    margin-right: 25px;
   }
 
   .info {
