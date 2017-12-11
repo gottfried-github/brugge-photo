@@ -55,23 +55,6 @@ var Slider = {
     'photos/21_20101122202029_1047854_large.jpg',
     'photos/21_20131213163327_3929318_large.jpg'
   ],
-  paused: false,
-  toggleSlide: function() {
-    console.log('toggleSlide')
-    if (this.paused) {
-      this.paused = false;
-      this.slide();
-    } else if (!this.paused) {
-      this.paused = true;
-    }
-  },
-  subscribeToggle: function() {
-    var self = this;
-    $('.photoSlides').on('click', function() {
-      self.toggleSlide()
-    })
-    console.log('sub toggle, ', this.toggleSlide)
-  },
   init: function(period) {
     this.period = period;
     this.slots.a.addClass('ztop');
