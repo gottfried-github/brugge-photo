@@ -350,49 +350,6 @@ home page
   padding-bottom: 50px;
 }
 
-@media (max-width: 1050px) {
-  .about {
-    /*
-    padding-top: 0px;
-    padding-bottom: 0px;
-    */
-  }
-
-  .about p {
-    margin-left: 75px;
-    margin-right: 75px;
-  }
-
-  .info .alignleft {
-    height: 800px;
-    line-height: 800px;
-    margin-top: -100px;
-  }
-
-}
-
-@media (max-width: 850px) {
-  .info .alignleft {
-    float: none;
-    max-width: none;
-    height: auto;
-    line-height: normal;
-    margin-top: auto;
-    /*
-    height: 800px;
-    line-height: 800px;
-    margin-top: -100px;
-    */
-  }
-
-  footer {
-    padding: 75px 0px;
-    /*
-    padding-bottom: 75px;
-    */
-  }
-}
-
 /*
   todo: flexbox prefixes and other cross browser related things (check out modernizr comments on flexbox);
 */
@@ -410,14 +367,23 @@ home page
 }
 
 .grid-item {
+  position: relative;
   flex-shrink: 0;
+  height: 500px;
+
   overflow: hidden;
+
   padding-left: 2.5px;
   padding-right: 2.5px;
   margin-top: 2.5px;
   margin-bottom: 2.5px;
 
   box-sizing: border-box;
+
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-clip: content-box;
   /*
 
   margin-left: 2.5px;
@@ -432,85 +398,107 @@ home page
 
 .one {
   width: 25.7%;
+  background-image: url('photos/01-21_20101122172143_1047015_large.jpg')
 }
 
 .two {
   width: 74.3%;
+  background-image: url('photos/02-21_20140108170653_3959947_large.jpg')
 }
 
 .three {
   width: 30%;
+  background-image: url('photos/03-21_20101122171701_1046978_large.jpg')
 }
 
 .four {
   width: 34.6%;
+  background-image: url('photos/04-21_20101122172201_1047019_large.jpg')
 }
 
 .five {
   width: 35.4%;
+  background-image: url('photos/05-21_20101122172138_1047013_large.jpg')
 }
 
 .six {
   width: 64.2%;
+  background-image: url('photos/06-21_20101122171705_1046979_large.jpg')
 }
 
 .seven {
   width: 35.8%;
+  background-image: url('photos/07-21_20101122171732_1046987_large.jpg')
 }
 
 .eight {
   width: 30.1%;
+  background-image: url('photos/08-21_20101122171719_1046983_large.jpg')
 }
 
 .nine {
   width: 69.9%;
+  background-image: url('photos/09-21_20101122171725_1046985_large.jpg')
 }
 
 .ten {
   width: 37%;
+  background-image: url('photos/10-21_20101122171806_1046992_large.jpg')
 }
 
 .eleven {
   width: 32.8%;
+  background-image: url('photos/11-21_20101122172113_1047006_large.jpg')
 }
 
 .twelve {
   width: 30.2%;
+  background-image: url('photos/12-21_20101122171716_1046982_large.jpg')
 }
 
 .thirteen {
   width: 30.8%;
+  background-image: url('photos/13-21_20140108170626_3959946_large.jpg')
 }
 
 .fourteen {
   width: 34.6%;
+  background-image: url('photos/14-21_20101122171739_1046989_large.jpg')
 }
 
 .fifteen {
   width: 34.6%;
+  background-image: url('photos/15-21_20101122171735_1046988_large.jpg')
 }
 
 .sixteen {
   width: 69.2%;
+  background-image: url('photos/16-21_20101122171803_1046991_large.jpg')
 }
 
 .seventeen {
   width: 30.8%;
+  background-image: url('photos/17-21_20101122172042_1047001_large.jpg')
 }
 
 .eighteen {
   width: 65.8%;
+  background-image: url('photos/18-21_20140108170615_3959945_large.jpg')
 }
 
 .nineteen {
   width: 34.2%;
+  background-image: url('photos/19-21_20101122172032_1046999_large.jpg')
 }
 
 .item-content {
+  position: absolute;
   width: 100%;
+  height: 100%;
+
+  /*
   margin-top: -18px;
   margin-bottom: -18px;
-  /*
   min-width: 0px;
   width: 125px;
   min-width: 50%;
@@ -547,7 +535,58 @@ home page
   */
 }
 
+@media (max-width: 1050px) {
+  .about {
+    /*
+    padding-top: 0px;
+    padding-bottom: 0px;
+    */
+  }
+
+  .about p {
+    margin-left: 75px;
+    margin-right: 75px;
+  }
+
+  .info .alignleft {
+    height: 800px;
+    line-height: 800px;
+    margin-top: -100px;
+  }
+
+  .grid-item {
+    height: 400px;
+  }
+
+}
+
+@media (max-width: 850px) {
+  .info .alignleft {
+    float: none;
+    max-width: none;
+    height: auto;
+    line-height: normal;
+    margin-top: auto;
+    /*
+    height: 800px;
+    line-height: 800px;
+    margin-top: -100px;
+    */
+  }
+
+  footer {
+    padding: 75px 0px;
+    /*
+    padding-bottom: 75px;
+    */
+  }
+}
+
 @media (max-width: 650px) {
+  #menu {
+    display: none;
+  }
+
   .grid-item {
     width: 100%;
     height: 550px;
@@ -567,6 +606,11 @@ home page
     width: auto;
     height: 100%;
   }
+
+  .info {
+    margin: auto 50px;
+  }
+
 }
 
 /*----------------------------------*/
