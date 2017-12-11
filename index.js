@@ -111,7 +111,7 @@ var Slider = {
 }
 
 function initIndex() {
-  Index.gridSetup();
+  // Index.gridSetup();
   Index.modernize();
   Slider.init(2850);
 }
