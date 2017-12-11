@@ -82,12 +82,7 @@ var Slider = {
      window.setTimeout(function() {
        console.log(self)
        console.log(this)
-       if (!self.paused) {
          self.doSlide(top, bottom, cb)
-       } else if (self.paused) {
-         self.stack.top = top;
-         self.stack.bottom = bottom;
-       }
      }, self.period)
     })
   },
