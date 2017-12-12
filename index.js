@@ -2,13 +2,15 @@ var Index = {
   windowWidth: $(window).width(),
   modernize: function(onresize) {
     // photo slides
+    /*
     if (!Modernizr.cssvhunit) {
-      // consoloe.log('falling back vh');
       Markup.log("no cssvhunit in Modernizr")
       $('.photoSlides').css('height', $(window).height());
     } else if (Modernizr.cssvhunit) {
       Markup.log("cssvhunit in Modernizr")
     }
+    */
+    $('.photoSlides').css('height', $(window).height());
     if (onresize) {
       var self = this;
       $(window).resize(function() {
@@ -146,8 +148,8 @@ var Slider = {
 
 function initIndex() {
   // Index.gridSetup();
-  // Markup.turnOff();
   // Markup.log(JSON.stringify(Modernizr))
+  Markup.turnOff();
   Index.modernize(true);
   Slider.init(2850, {adaptToMobile: true});
 }
