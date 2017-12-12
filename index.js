@@ -14,6 +14,7 @@ var Index = {
       $(window).resize(function() {
         if (self.windowWidth !== $(window).width()) {
           $('.photoSlides').css('height', $(window).height());
+          self.windowWidth = $(window).width();
         }
       })
     }
