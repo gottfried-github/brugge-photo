@@ -165,8 +165,8 @@ var Slider = {
 
 function initIndex() {
   // Index.gridSetup();
-  Markup.turnOff();
-  Markup.log(JSON.stringify(Modernizr))
+  // Markup.turnOff();
+  // Markup.log(JSON.stringify(Modernizr))
   Index.modernize();
   Slider.init(2850, {adaptToMobile: true});
 }
