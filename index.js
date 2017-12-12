@@ -165,13 +165,14 @@ var Slider = {
 
 function initIndex() {
   // Index.gridSetup();
-  console.log(Modernizr)
+  Markup.turnOff();
   Markup.log(JSON.stringify(Modernizr))
   Index.modernize();
   Slider.init(2850, {adaptToMobile: true});
 }
 
 var Markup = {
+  off: false,
   markup: "",
   br: "</br>",
   el: $(".markuplog"),
@@ -183,6 +184,18 @@ var Markup = {
     this.markup += value + this.br;
     console.log(value)
     this.el.html(this.markup)
+  },
+  turnOff: function() {
+    if (!this.off) {
+      this.el.css('display', 'none');
+      this.off = true;
+    }
+  },
+  turnOn: function() {
+    if (this.off) {
+      this.el.css('display', 'block');
+      this.off = false;
+    }
   }
 }
 
