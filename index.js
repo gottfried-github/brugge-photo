@@ -33,8 +33,11 @@ var Index = {
   modernize: function() {
     // photo slides
     if (!Modernizr.cssvhunit) {
-      consoloe.log('falling back vh')
+      // consoloe.log('falling back vh');
+      Markup.log("no cssvhunit in Modernizr")
       $('.photoSlides').css('height', $(window).height());
+    } else if (Modernizr.cssvhunit) {
+      Markup.log("cssvhunit in Modernizr")
     }
   }
 }
@@ -162,8 +165,42 @@ var Slider = {
 
 function initIndex() {
   // Index.gridSetup();
+  Markup.turnOff();
+  Markup.log(JSON.stringify(Modernizr))
   Index.modernize();
   Slider.init(2850, {adaptToMobile: true});
+}
+
+var Markup = {
+  off: false,
+  markup: "",
+  br: "</br>",
+  el: $(".markuplog"),
+  log: function(value) {
+    if (typeof(value) !== "string") {
+      return "shit!"
+    }
+
+    this.markup += value + this.br;
+    console.log(value)
+    this.el.html(this.markup)
+  },
+  turnOff: function() {
+    if (!this.off) {
+      this.el.css('display', 'none');
+      this.off = true;
+    }
+  },
+  turnOn: function() {
+    if (this.off) {
+      this.el.css('display', 'block');
+      this.off = false;
+    }
+  }
+}
+
+function markuplog() {
+  $(".markuplog").text();
 }
 
 $(document).ready(initIndex)

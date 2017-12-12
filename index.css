@@ -65,6 +65,15 @@ span {
   */
 }
 
+.markuplog {
+  position: absolute;
+  top: 0px;
+  z-index: 2;
+  width: 100%;
+  /*
+  */
+}
+
 /*----------------------------------*/
 
 .alignleft {
@@ -248,8 +257,8 @@ home page
   position: absolute;
   bottom: 0px;
   z-index: 2;
-  width: 100%;
   /*
+  width: 100%;
   */
 }
 
@@ -261,6 +270,11 @@ home page
   line-height: 24px;
   margin: auto auto;
   */
+}
+
+.logo {
+  margin-left: 60px;
+  margin-bottom: 60px;
 }
 
 .logo div {
