@@ -57,11 +57,13 @@ var Slider = {
       if (!this.mobile) {
         this.mobile = true;
         this.setUrls();
+        Markup.log(this.mobile);
       }
     } else if (width > 650) {
       if (this.mobile) {
         this.mobile = false;
         this.setUrls();
+        Markup.log(this.mobile);
       }
     }
   },
