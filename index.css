@@ -93,13 +93,13 @@ section {
 
   padding-top: 18px;
   padding-bottom: 18px;
+  z-index: 1;
 
   background: linear-gradient(to right, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
 
   /*
     position: fixed;
     bottom: 0px;
-    z-index: 2;
     width: 100%;
   */
 }
