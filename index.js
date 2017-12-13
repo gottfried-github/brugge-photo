@@ -146,14 +146,6 @@ var Slider = {
 
 }
 
-function initIndex() {
-  // Index.gridSetup();
-  // Markup.log(JSON.stringify(Modernizr))
-  Markup.turnOff();
-  Index.modernize(true);
-  Slider.init(2850, {adaptToMobile: true});
-}
-
 var Markup = {
   off: false,
   markup: "",
@@ -186,8 +178,7 @@ function initIndex() {
   // Index.gridSetup();
   // Markup.log(JSON.stringify(Modernizr))
   Markup.turnOff();
-  Index.stretchSlides(true);
-  Index.initMenu();
+  Index.modernize(true);
   Slider.init(2850, {adaptToMobile: true});
 }
 
