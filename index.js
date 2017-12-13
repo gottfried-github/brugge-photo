@@ -107,8 +107,6 @@ var Slider = {
     var self = this;
     this.doSlide(this.stack.top, this.stack.bottom, function(top, bottom, cb) {
      self.setupTimeout(function() {
-       console.log(self)
-       console.log(this)
          self.doSlide(top, bottom, cb)
      });
     })
@@ -133,7 +131,6 @@ var Slider = {
       var image = self.urls.shift();
       $(this).css('background-image', 'url('+ image +')');
       self.urls.push(image);
-      console.log(cb)
       cb(bottom, top, cb)
       // self.stack.top = bottom;
       // self.stack.bottom = top;
@@ -174,12 +171,47 @@ var Markup = {
   }
 }
 
+ var ScrollKeyframe = {
+   init: function(keyframe, dom) {
+     this.keyframe = keyframe;
+     this.keyBit = this.keyframe / 100;
+     this.dom = dom;
+     var self = this;
+     $(window).scroll(function() {
+       // console.log('scrollKeyframe: scrolling')
+       self.do.call(self);
+     })
+   },
+   do: function() {
+     this.rate = $(window).scrollTop() / this.keyBit;
+     console.log('this.rate', this.rate)
+     if (this.rate < 101) {
+       if (this.value > 0 && this.value < 256) {
+         this.value = 255 - 255 / 100 * this.rate;
+         this.setStyle();
+       }
+     }
+   },
+   setStyle: function() {
+     // console.log('scrollKeyframe: setStyle')
+
+       this.dom.el.each(function() {
+         // console.log(this, this.value)
+         $(this).css({
+           'stroke': 'rgba('+ this.value +', '+ this.value +', '+ this.value +', 0.7)'
+         })
+       })
+
+   }
+ }
+
 function initIndex() {
   // Index.gridSetup();
   // Markup.log(JSON.stringify(Modernizr))
   Markup.turnOff();
   Index.modernize(true);
   Slider.init(2850, {adaptToMobile: true});
+  ScrollKeyframe.init($('.about h1').offset().top, {el: $('#menu path'), prop: 'stroke'});
 }
 
 $(document).ready(initIndex)
