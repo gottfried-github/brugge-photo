@@ -1,14 +1,15 @@
 var Index = {
   windowWidth: $(window).width(),
-  stretchSlides: function(onresize) {
+  modernize: function(onresize) {
     // photo slides
+    /*
     if (!Modernizr.cssvhunit) {
-      // consoloe.log('falling back vh');
       Markup.log("no cssvhunit in Modernizr")
       $('.photoSlides').css('height', $(window).height());
     } else if (Modernizr.cssvhunit) {
       Markup.log("cssvhunit in Modernizr")
     }
+    */
     $('.photoSlides').css('height', $(window).height());
     if (onresize) {
       var self = this;
@@ -19,23 +20,6 @@ var Index = {
         }
       })
     }
-  },
-  initMenu: function() {
-    var menu = $("#menu")
-    $(window).scroll(function() {
-      console.log($(window).scrollTop())
-      console.log(menu.offset())
-      console.log($(window).scrollTop() > menu.offset().top)
-      if ($(window).scrollTop() > menu.offset().top) {
-
-        menu.css({
-        'position': 'fixed',
-        'top': '0px',
-        'width': '100%'
-        })
-        console.log(menu)
-      }
-    })
   }
 }
 
@@ -76,11 +60,13 @@ var Slider = {
       if (!this.mobile) {
         this.mobile = true;
         this.setUrls();
+        Markup.log(this.mobile.toString());
       }
     } else if (width > 650) {
       if (this.mobile) {
         this.mobile = false;
         this.setUrls();
+        Markup.log(this.mobile.toString());
       }
     }
   },
@@ -159,6 +145,15 @@ var Slider = {
     */
 
 }
+
+function initIndex() {
+  // Index.gridSetup();
+  // Markup.log(JSON.stringify(Modernizr))
+  Markup.turnOff();
+  Index.modernize(true);
+  Slider.init(2850, {adaptToMobile: true});
+}
+
 var Markup = {
   off: false,
   markup: "",

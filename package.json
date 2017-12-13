@@ -1,0 +1,19 @@
+{
+  "name": "previewtwo",
+  "version": "0.1.1",
+  "description": "a preview website",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "/"
+  },
+  "keywords": [
+    "preview",
+    "portfolio"
+  ],
+  "author": "spti",
+  "license": "MIT"
+}
