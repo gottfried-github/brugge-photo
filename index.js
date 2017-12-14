@@ -107,8 +107,6 @@ var Slider = {
     var self = this;
     this.doSlide(this.stack.top, this.stack.bottom, function(top, bottom, cb) {
      self.setupTimeout(function() {
-       console.log(self)
-       console.log(this)
          self.doSlide(top, bottom, cb)
      });
     })
@@ -133,7 +131,6 @@ var Slider = {
       var image = self.urls.shift();
       $(this).css('background-image', 'url('+ image +')');
       self.urls.push(image);
-      console.log(cb)
       cb(bottom, top, cb)
       // self.stack.top = bottom;
       // self.stack.bottom = top;
@@ -174,12 +171,144 @@ var Markup = {
   }
 }
 
+var ScrollKeyframe = {
+  init: function(keyframes, dom) {
+    this.dom = dom;
+
+    // keyframes should be specified in ascending order, by scrollPos, so
+    // the first item in array should be the first keyframe to perform animation on
+    this.current = keyframes.shift();
+    this.prev = [];
+    this.next = [].concat(keyframes);
+
+    this.initKeyframe();
+    var self = this;
+    $(window).scroll(function() {
+      var scroll = $(window).scrollTop();
+      /*
+      var prevScrollTo = self.prev[0].scrollPos.to;
+      var nextScrollFrom = self.next[0].scrollPos.from;
+      */
+      var inRange = ( scroll >= self.current.scrollPos.from && scroll <= self.current.scrollPos.to );
+
+      if ( inRange ) {
+        self.do();
+      } else if ( !inRange ) {
+
+        // if scroll position is in range of the previous keyframe,
+        // then pull the previous keyframe to the current slot
+        if (self.prev.length != 0 && scroll <= self.prev[0].scrollPos.to) {
+          self.current.initialized = false;
+          self.next.unshift(self.current);
+          self.current = self.prev.shift();
+          if (!self.current.initialized) {
+            self.initKeyframe.call(self);
+          }
+
+        // if scroll position is in range of the next keyframe,
+        // then pull the next keyframe to the current slot
+        } else if (self.next.length != 0 && scroll >= self.next[0].scrollPos.from) {
+          self.current.initialized = false;
+          self.prev.unshift(self.current);
+          self.current = self.next.shift();
+          if (!self.current.initialized) {
+            self.initKeyframe.call(self);
+          }
+        }
+      }
+    })
+  },
+  locate: function() {
+
+  },
+  setScrollRate: function() {
+    this.scrollRate = ( Math.abs(this.current.scrollPos.from - $(window).scrollTop()) ) / this.scrollKeyBit;
+    return this.scrollRate;
+  },
+  initKeyframe: function() {
+    // this.keyframe = keyframe.value;
+
+    // 'to' should always be greater than 'from'
+    this.scrollKeyframe = this.current.scrollPos.to - this.current.scrollPos.from;
+    this.value = this.current.value.from;
+
+    this.scrollKeyBit = this.scrollKeyframe / 100;
+    this.setScrollRate();
+
+    // what is the direction of movement
+    this.asc = (this.current.value.from < this.current.value.to) ? true : false;
+    this.current.initialized = true;
+    /*
+    var self = this;
+      $(window).scroll(function() {
+      self.do.call(self);
+    })
+    */
+  },
+  do: function() {
+    this.setScrollRate();
+    if (this.scrollRate < 101) {
+      if (this.asc) {
+        this.value = this.current.value.to / 100 * this.scrollRate;
+      } else if (!this.asc) {
+        // ???
+        this.value = this.current.value.from - this.current.value.from / 100 * this.scrollRate;
+      }
+
+      if ( (this.value >= this.current.value.from && this.value <= this.current.value.to)
+        || (this.value >= this.current.value.to && this.value <= this.current.value.from) ) {
+          this.setStyle();
+        }
+    }
+    // console.log('value: ', this.value, ', scrollRate: ', this.scrollRate, ', asc: ', this.asc)
+  },
+  setStyle: function() {
+    var self = this;
+    this.dom.el.each(function() {
+      $(this).css({
+        'stroke': 'rgba('+ self.value +', '+ self.value +', '+ self.value +', 0.7)'
+      })
+    })
+  }
+}
+
 function initIndex() {
   // Index.gridSetup();
   // Markup.log(JSON.stringify(Modernizr))
   Markup.turnOff();
   Index.modernize(true);
   Slider.init(2850, {adaptToMobile: true});
+  var $el = $('.about');
+  var keyfr1To = parseInt($el.offset().top, 10) - (parseInt($el.css('marginTop'), 10) + parseInt($el.css('paddingTop'), 10) );
+  // console.log(keyfr1To)
+  // keyframes should be specified in ascending order (by scroll position)
+  var keyframes = [
+    {
+      scrollPos: {
+        from: 0,
+        to: keyfr1To
+      },
+      value: {from: 255, to: 0}
+    },
+    {
+      scrollPos: {
+        from: $('.photos').offset().top,
+        to: $('.photos').offset().top + 200
+      },
+      value: {from: 0, to: 255}
+    },
+    {
+      scrollPos: {
+        from: $('.info').offset().top - 350,
+        to: $('.info').offset().top
+      },
+      value: {from: 255, to: 0}
+    }
+  ];
+  ScrollKeyframe.init(keyframes, {
+      el: $('#menu path'),
+      prop: 'stroke'
+  });
 }
 
 $(document).ready(initIndex)
