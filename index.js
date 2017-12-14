@@ -171,39 +171,48 @@ var Markup = {
   }
 }
 
- var ScrollKeyframe = {
-   init: function(keyframe, dom) {
-     this.keyframe = keyframe;
-     this.keyBit = this.keyframe / 100;
-     this.dom = dom;
-     var self = this;
-     $(window).scroll(function() {
-       // console.log('scrollKeyframe: scrolling')
-       self.do.call(self);
-     })
-   },
-   do: function() {
-     this.rate = $(window).scrollTop() / this.keyBit;
-     console.log('this.rate', this.rate)
-     if (this.rate < 101) {
-       if (this.value > 0 && this.value < 256) {
-         this.value = 255 - 255 / 100 * this.rate;
-         this.setStyle();
-       }
-     }
-   },
-   setStyle: function() {
-     // console.log('scrollKeyframe: setStyle')
+var ScrollKeyframe = {
+  init: function(keyframe, dom) {
+    this.keyframe = keyframe.value;
+    this.scrollKeyframe = keyframe.scrollPos;
+    this.dom = dom;
+    this.value = this.keyframe.from;
 
-       this.dom.el.each(function() {
-         // console.log(this, this.value)
-         $(this).css({
-           'stroke': 'rgba('+ this.value +', '+ this.value +', '+ this.value +', 0.7)'
-         })
-       })
+    this.scrollKeyBit = this.scrollKeyframe / 100;
+    this.scrollRate = $(window).scrollTop() / this.scrollKeyBit;
 
-   }
- }
+    // what is the direction of movement
+    this.asc = (this.keyframe.from < this.keyframe.to) ? true : false;
+    var self = this;
+    $(window).scroll(function() {
+      // console.log('scrollKeyframe: scrolling')
+      self.scrollRate = $(window).scrollTop() / self.scrollKeyBit;
+      if (self.scrollRate < 101) {
+        self.do.call(self);
+      }
+    })
+  },
+  do: function() {
+    if (this.asc && (this.value >= this.keyframe.from && this.value <= this.keyframe.to)) {
+      this.value = this.keyframe.to / 100 * this.scrollRate;
+    } else if (!this.asc && (this.value >= this.keyframe.to && this.value <= this.keyframe.from)) {
+      // ???
+      this.value = this.keyframe.from - this.keyframe.from / 100 * this.scrollRate;
+      console.log('scrollKeyfr', this.value)
+    }
+    this.setStyle();
+  },
+  setStyle: function() {
+      // console.log('scrollKeyframe: setStyle')
+
+    this.dom.el.each(function() {
+    // console.log(this, this.value)
+      $(this).css({
+        'stroke': 'rgba('+ this.value +', '+ this.value +', '+ this.value +', 0.7)'
+      })
+    })
+  }
+}
 
 function initIndex() {
   // Index.gridSetup();
@@ -211,7 +220,14 @@ function initIndex() {
   Markup.turnOff();
   Index.modernize(true);
   Slider.init(2850, {adaptToMobile: true});
-  ScrollKeyframe.init($('.about h1').offset().top, {el: $('#menu path'), prop: 'stroke'});
+  ScrollKeyframe.init(
+    {
+      scrollPos: $('.about h1').offset().top,
+      value: {from: 255, to: 0}
+    }, {
+      el: $('#menu path'),
+      prop: 'stroke'
+  });
 }
 
 $(document).ready(initIndex)
