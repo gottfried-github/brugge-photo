@@ -185,13 +185,29 @@ var ScrollKeyframe = {
     var self = this;
     $(window).scroll(function() {
       var scroll = $(window).scrollTop();
-      var currentScrollTo = self.current.scrollPos.to
+      /*
+      var prevScrollTo = self.prev[0].scrollPos.to;
+      var nextScrollFrom = self.next[0].scrollPos.from;
+      */
+      var inRange = ( scroll >= self.current.scrollPos.from && scroll <= self.current.scrollPos.to );
 
-      if (self.next.length > 0) {
-        var nextScrollFrom = self.next[0].scrollPos.from
-        if ( scroll <= currentScrollTo && !(scroll >= nextScrollFrom) ) {
-          self.do();
-        } else if ( scroll >= nextScrollFrom ) {
+      if ( inRange ) {
+        self.do();
+      } else if ( !inRange ) {
+
+        // if scroll position is in range of the previous keyframe,
+        // then pull the previous keyframe to the current slot
+        if (self.prev.length != 0 && scroll <= self.prev[0].scrollPos.to) {
+          self.current.initialized = false;
+          self.next.unshift(self.current);
+          self.current = self.prev.shift();
+          if (!self.current.initialized) {
+            self.initKeyframe.call(self);
+          }
+
+        // if scroll position is in range of the next keyframe,
+        // then pull the next keyframe to the current slot
+        } else if (self.next.length != 0 && scroll >= self.next[0].scrollPos.from) {
           self.current.initialized = false;
           self.prev.unshift(self.current);
           self.current = self.next.shift();
@@ -199,10 +215,6 @@ var ScrollKeyframe = {
             self.initKeyframe.call(self);
           }
         }
-      } else if (self.next.length == 0) {
-        if ( scroll <= currentScrollTo ) {
-          self.do();
-        };
       }
     })
   },
@@ -248,7 +260,7 @@ var ScrollKeyframe = {
           this.setStyle();
         }
     }
-    console.log('value: ', this.value, ', scrollRate: ', this.scrollRate, ', asc: ', this.asc)
+    // console.log('value: ', this.value, ', scrollRate: ', this.scrollRate, ', asc: ', this.asc)
   },
   setStyle: function() {
     var self = this;
