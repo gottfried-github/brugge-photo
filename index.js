@@ -172,7 +172,19 @@ var Markup = {
 }
 
 var ScrollKeyframe = {
-  init: function(keyframe, dom) {
+  init: function(keyframes) {
+    this.current = [];
+    this.before = [];
+    this.after = [];
+
+    this.current.push(keyframes.shift());
+    this.after.concat(keyframes);
+    // if (keyframes[0].scrollPos == 0) {}
+  },
+  locate: function() {
+
+  },
+  initKeyframe: function(keyframe, dom) {
     this.keyframe = keyframe.value;
     this.scrollKeyframe = keyframe.scrollPos;
     this.dom = dom;
@@ -183,27 +195,28 @@ var ScrollKeyframe = {
 
     // what is the direction of movement
     this.asc = (this.keyframe.from < this.keyframe.to) ? true : false;
+    /*
     var self = this;
-    $(window).scroll(function() {
-      // console.log('scrollKeyframe: scrolling')
-      self.scrollRate = $(window).scrollTop() / self.scrollKeyBit;
-      if (self.scrollRate < 101) {
-        self.do.call(self);
-      }
+      $(window).scroll(function() {
+      self.do.call(self);
     })
+    */
   },
   do: function() {
-    if (this.asc) {
-      this.value = this.keyframe.to / 100 * this.scrollRate;
-    } else if (!this.asc) {
-      // ???
-      this.value = this.keyframe.from - this.keyframe.from / 100 * this.scrollRate;
-    }
-
-    if ( (this.value >= this.keyframe.from && this.value <= this.keyframe.to)
-      || (this.value >= this.keyframe.to && this.value <= this.keyframe.from) ) {
-        this.setStyle();
+    self.scrollRate = $(window).scrollTop() / self.scrollKeyBit;
+    if (self.scrollRate < 101) {
+      if (this.asc) {
+        this.value = this.keyframe.to / 100 * this.scrollRate;
+      } else if (!this.asc) {
+        // ???
+        this.value = this.keyframe.from - this.keyframe.from / 100 * this.scrollRate;
       }
+
+      if ( (this.value >= this.keyframe.from && this.value <= this.keyframe.to)
+        || (this.value >= this.keyframe.to && this.value <= this.keyframe.from) ) {
+          this.setStyle();
+        }
+    }
   },
   setStyle: function() {
     var self = this;
@@ -223,11 +236,33 @@ function initIndex() {
   Index.modernize(true);
   Slider.init(2850, {adaptToMobile: true});
   var $el = $('.about');
-  ScrollKeyframe.init(
+  var keyfr1To = parseInt($el.offset().top, 10) - (parseInt($el.css('marginTop'), 10) + parseInt($el.css('paddingTop'), 10) );
+
+  // keyframes should be specified in ascending order (by scroll position)
+  var keyframes = [
     {
-      scrollPos: parseInt($el.offset().top, 10) - (parseInt($el.css('marginTop'), 10) + parseInt($el.css('paddingTop'), 10) ),
+      scrollPos: {
+        from: 0,
+        to: keyfr1To
+      },
       value: {from: 255, to: 0}
-    }, {
+    },
+    {
+      scrollPos: {
+        from: $('.photos').offset().top - 150,
+        to: $('.photos').offset().top + 200
+      },
+      value: {from: 0, to: 255}
+    },
+    {
+      scrollPos: {
+        from: $('.info').offset().top - 350,
+        to: $('.info').offset().top
+      },
+      value: {from: 255, to: 0}
+    }
+  ];
+  ScrollKeyframe.init({
       el: $('#menu path'),
       prop: 'stroke'
   });
