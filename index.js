@@ -193,22 +193,24 @@ var ScrollKeyframe = {
     })
   },
   do: function() {
-    if (this.asc && (this.value >= this.keyframe.from && this.value <= this.keyframe.to)) {
+    if (this.asc) {
       this.value = this.keyframe.to / 100 * this.scrollRate;
-    } else if (!this.asc && (this.value >= this.keyframe.to && this.value <= this.keyframe.from)) {
+    } else if (!this.asc) {
       // ???
       this.value = this.keyframe.from - this.keyframe.from / 100 * this.scrollRate;
-      console.log('scrollKeyfr', this.value)
     }
-    this.setStyle();
+
+    if ( (this.value >= this.keyframe.from && this.value <= this.keyframe.to)
+      || (this.value >= this.keyframe.to && this.value <= this.keyframe.from) ) {
+        this.setStyle();
+      }
   },
   setStyle: function() {
-      // console.log('scrollKeyframe: setStyle')
-
+    var self = this;
     this.dom.el.each(function() {
-    // console.log(this, this.value)
+      console.log('scrollKeyfr', self.value)
       $(this).css({
-        'stroke': 'rgba('+ this.value +', '+ this.value +', '+ this.value +', 0.7)'
+        'stroke': 'rgba('+ self.value +', '+ self.value +', '+ self.value +', 0.7)'
       })
     })
   }
