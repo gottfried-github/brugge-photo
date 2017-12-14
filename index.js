@@ -208,7 +208,7 @@ var ScrollKeyframe = {
   setStyle: function() {
     var self = this;
     this.dom.el.each(function() {
-      console.log('scrollKeyfr', self.value)
+      console.log('scrollKeyfr', self.value, self.scrollKeyframe)
       $(this).css({
         'stroke': 'rgba('+ self.value +', '+ self.value +', '+ self.value +', 0.7)'
       })
@@ -222,9 +222,10 @@ function initIndex() {
   Markup.turnOff();
   Index.modernize(true);
   Slider.init(2850, {adaptToMobile: true});
+  var $el = $('.about');
   ScrollKeyframe.init(
     {
-      scrollPos: $('.about h1').offset().top,
+      scrollPos: parseInt($el.offset().top, 10) - (parseInt($el.css('marginTop'), 10) + parseInt($el.css('paddingTop'), 10) ),
       value: {from: 255, to: 0}
     }, {
       el: $('#menu path'),
