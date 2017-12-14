@@ -174,38 +174,35 @@ var Markup = {
 var ScrollKeyframe = {
   init: function(keyframes, dom) {
     this.dom = dom;
+
     // keyframes should be specified in ascending order, by scrollPos, so
     // the first item in array should be the first keyframe to perform animation on
     this.current = keyframes.shift();
     this.prev = [];
     this.next = [].concat(keyframes);
 
-    // console.log(keyframes, this.prev, this.next, this.current)
-
     this.initKeyframe();
-    // this.current
-    // if (keyframes[0].scrollPos == 0) {}
     var self = this;
     $(window).scroll(function() {
-      // console.log($(window).scrollTop(), self.current.scrollPos.from - 5)
-      // console.log($(window).scrollTop(), self.current.scrollPos.to)
       var scroll = $(window).scrollTop();
       var currentScrollTo = self.current.scrollPos.to
-      var nextScrollFrom = self.next[0].scrollPos.from // || 10 * 600000
-      if ( scroll <= currentScrollTo && !(scroll >= nextScrollFrom) ) {
-        // console.log("scrollTop() >= scrollPos.from", self.current)
-        self.do();
-      } else if ( scroll >= nextScrollFrom ) { // $(window).scrollTop() >= (self.current.scrollPos.to - 5)
-        // console.log("scrollTop() >= scrollPos.to", self.current)
-        self.current.initialized = false;
-        self.prev.unshift(self.current);
-        self.current = self.next.shift();
-        if (!self.current.initialized) {
-          self.initKeyframe.call(self);
-          console.log('prev: ', self.prev)
-          console.log('next: ', self.next)
-          console.log('current: ', self.current)
+
+      if (self.next.length > 0) {
+        var nextScrollFrom = self.next[0].scrollPos.from
+        if ( scroll <= currentScrollTo && !(scroll >= nextScrollFrom) ) {
+          self.do();
+        } else if ( scroll >= nextScrollFrom ) {
+          self.current.initialized = false;
+          self.prev.unshift(self.current);
+          self.current = self.next.shift();
+          if (!self.current.initialized) {
+            self.initKeyframe.call(self);
+          }
         }
+      } else if (self.next.length == 0) {
+        if ( scroll <= currentScrollTo ) {
+          self.do();
+        };
       }
     })
   },
