@@ -172,44 +172,63 @@ var Markup = {
 }
 
 var ScrollKeyframe = {
-  init: function(keyframes) {
+  init: function(keyframes, dom) {
+    this.dom = dom;
     // keyframes should be specified in ascending order, by scrollPos, so
     // the first item in array should be the first keyframe to perform animation on
     this.current = keyframes.shift();
     this.prev = [];
-    this.next = [];
+    this.next = [].concat(keyframes);
 
-    this.next.concat(keyframes);
+    // console.log(keyframes, this.prev, this.next, this.current)
 
-    this.initKeyframe(this.current);
+    this.initKeyframe();
+    // this.current
     // if (keyframes[0].scrollPos == 0) {}
     var self = this;
     $(window).scroll(function() {
-      if ( $(window).scrollTop() >= (self.current.scrollPos.from - 5) ) {
+      // console.log($(window).scrollTop(), self.current.scrollPos.from - 5)
+      // console.log($(window).scrollTop(), self.current.scrollPos.to)
+      var scroll = $(window).scrollTop();
+      var currentScrollTo = self.current.scrollPos.to
+      var nextScrollFrom = self.next[0].scrollPos.from // || 10 * 600000
+      if ( scroll <= currentScrollTo && !(scroll >= nextScrollFrom) ) {
+        // console.log("scrollTop() >= scrollPos.from", self.current)
         self.do();
-      } else if ( $(window).scrollTop() >= (self.current.scrollPos.to - 5) ) {
-        self.current.inited = false;
+      } else if ( scroll >= nextScrollFrom ) { // $(window).scrollTop() >= (self.current.scrollPos.to - 5)
+        // console.log("scrollTop() >= scrollPos.to", self.current)
+        self.current.initialized = false;
         self.prev.unshift(self.current);
         self.current = self.next.shift();
-        self.initKeyframe(self.current)
-        self.current.inited = true;
+        if (!self.current.initialized) {
+          self.initKeyframe.call(self);
+          console.log('prev: ', self.prev)
+          console.log('next: ', self.next)
+          console.log('current: ', self.current)
+        }
       }
     })
   },
   locate: function() {
 
   },
-  initKeyframe: function(keyframe, dom) {
-    this.keyframe = keyframe.value;
-    this.scrollKeyframe = keyframe.scrollPos.to - keyframe.scrollPos.from;
-    this.dom = dom;
-    this.value = this.keyframe.from;
+  setScrollRate: function() {
+    this.scrollRate = ( Math.abs(this.current.scrollPos.from - $(window).scrollTop()) ) / this.scrollKeyBit;
+    return this.scrollRate;
+  },
+  initKeyframe: function() {
+    // this.keyframe = keyframe.value;
+
+    // 'to' should always be greater than 'from'
+    this.scrollKeyframe = this.current.scrollPos.to - this.current.scrollPos.from;
+    this.value = this.current.value.from;
 
     this.scrollKeyBit = this.scrollKeyframe / 100;
-    this.scrollRate = ( Math.abs(keyframe.scrollPos.from - $(window).scrollTop()) ) / this.scrollKeyBit;
+    this.setScrollRate();
 
     // what is the direction of movement
-    this.asc = (this.keyframe.from < this.keyframe.to) ? true : false;
+    this.asc = (this.current.value.from < this.current.value.to) ? true : false;
+    this.current.initialized = true;
     /*
     var self = this;
       $(window).scroll(function() {
@@ -218,25 +237,25 @@ var ScrollKeyframe = {
     */
   },
   do: function() {
-    this.scrollRate = ( Math.abs(keyframe.scrollPos.from - $(window).scrollTop()) ) / this.scrollKeyBit;
+    this.setScrollRate();
     if (this.scrollRate < 101) {
       if (this.asc) {
-        this.value = this.keyframe.to / 100 * this.scrollRate;
+        this.value = this.current.value.to / 100 * this.scrollRate;
       } else if (!this.asc) {
         // ???
-        this.value = this.keyframe.from - this.keyframe.from / 100 * this.scrollRate;
+        this.value = this.current.value.from - this.current.value.from / 100 * this.scrollRate;
       }
 
-      if ( (this.value >= this.keyframe.from && this.value <= this.keyframe.to)
-        || (this.value >= this.keyframe.to && this.value <= this.keyframe.from) ) {
+      if ( (this.value >= this.current.value.from && this.value <= this.current.value.to)
+        || (this.value >= this.current.value.to && this.value <= this.current.value.from) ) {
           this.setStyle();
         }
     }
+    console.log('value: ', this.value, ', scrollRate: ', this.scrollRate, ', asc: ', this.asc)
   },
   setStyle: function() {
     var self = this;
     this.dom.el.each(function() {
-      console.log('scrollKeyfr', self.value, self.scrollKeyframe)
       $(this).css({
         'stroke': 'rgba('+ self.value +', '+ self.value +', '+ self.value +', 0.7)'
       })
@@ -252,7 +271,7 @@ function initIndex() {
   Slider.init(2850, {adaptToMobile: true});
   var $el = $('.about');
   var keyfr1To = parseInt($el.offset().top, 10) - (parseInt($el.css('marginTop'), 10) + parseInt($el.css('paddingTop'), 10) );
-
+  // console.log(keyfr1To)
   // keyframes should be specified in ascending order (by scroll position)
   var keyframes = [
     {
@@ -264,7 +283,7 @@ function initIndex() {
     },
     {
       scrollPos: {
-        from: $('.photos').offset().top - 150,
+        from: $('.photos').offset().top,
         to: $('.photos').offset().top + 200
       },
       value: {from: 0, to: 255}
@@ -277,7 +296,7 @@ function initIndex() {
       value: {from: 255, to: 0}
     }
   ];
-  ScrollKeyframe.init({
+  ScrollKeyframe.init(keyframes, {
       el: $('#menu path'),
       prop: 'stroke'
   });
