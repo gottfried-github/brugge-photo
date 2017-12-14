@@ -294,22 +294,12 @@ home page
 
 .transition {
 
-  -webkit-transition: opacity 1500ms cubic-bezier(0.470, 0.000, 0.745, 0.715);
-  -moz-transition: opacity 1500ms cubic-bezier(0.470, 0.000, 0.745, 0.715);
-  -o-transition: opacity 1500ms cubic-bezier(0.470, 0.000, 0.745, 0.715);
-  transition: opacity 1500ms cubic-bezier(0.470, 0.000, 0.745, 0.715);
+  -webkit-transition: all 1400ms cubic-bezier(0.255, 0.185, 0.840, 0.200);
+     -moz-transition: all 1400ms cubic-bezier(0.255, 0.185, 0.840, 0.200);
+       -o-transition: all 1400ms cubic-bezier(0.255, 0.185, 0.840, 0.200);
+          transition: all 1400ms cubic-bezier(0.255, 0.185, 0.840, 0.200);
 
         /*
-        -webkit-transition: opacity 1300ms cubic-bezier(0.470, 0.000, 0.705, 0.760);
-        -moz-transition: opacity 1300ms cubic-bezier(0.470, 0.000, 0.705, 0.760);
-        -o-transition: opacity 1300ms cubic-bezier(0.470, 0.000, 0.705, 0.760);
-        transition: opacity 1300ms cubic-bezier(0.470, 0.000, 0.705, 0.760);
-
-
-        -webkit-transition: opacity 1200ms cubic-bezier(0.275, 0.570, 0.890, 0.740);
-        -moz-transition: opacity 1200ms cubic-bezier(0.275, 0.570, 0.890, 0.740);
-        -o-transition: opacity 1200ms cubic-bezier(0.275, 0.570, 0.890, 0.740);
-        transition: opacity 1200ms cubic-bezier(0.275, 0.570, 0.890, 0.740); custom
         */
 }
 
