@@ -173,25 +173,40 @@ var Markup = {
 
 var ScrollKeyframe = {
   init: function(keyframes) {
-    this.current = [];
-    this.before = [];
-    this.after = [];
+    // keyframes should be specified in ascending order, by scrollPos, so
+    // the first item in array should be the first keyframe to perform animation on
+    this.current = keyframes.shift();
+    this.prev = [];
+    this.next = [];
 
-    this.current.push(keyframes.shift());
-    this.after.concat(keyframes);
+    this.next.concat(keyframes);
+
+    this.initKeyframe(this.current);
     // if (keyframes[0].scrollPos == 0) {}
+    var self = this;
+    $(window).scroll(function() {
+      if ( $(window).scrollTop() >= (self.current.scrollPos.from - 5) ) {
+        self.do();
+      } else if ( $(window).scrollTop() >= (self.current.scrollPos.to - 5) ) {
+        self.current.inited = false;
+        self.prev.unshift(self.current);
+        self.current = self.next.shift();
+        self.initKeyframe(self.current)
+        self.current.inited = true;
+      }
+    })
   },
   locate: function() {
 
   },
   initKeyframe: function(keyframe, dom) {
     this.keyframe = keyframe.value;
-    this.scrollKeyframe = keyframe.scrollPos;
+    this.scrollKeyframe = keyframe.scrollPos.to - keyframe.scrollPos.from;
     this.dom = dom;
     this.value = this.keyframe.from;
 
     this.scrollKeyBit = this.scrollKeyframe / 100;
-    this.scrollRate = $(window).scrollTop() / this.scrollKeyBit;
+    this.scrollRate = ( Math.abs(keyframe.scrollPos.from - $(window).scrollTop()) ) / this.scrollKeyBit;
 
     // what is the direction of movement
     this.asc = (this.keyframe.from < this.keyframe.to) ? true : false;
@@ -203,8 +218,8 @@ var ScrollKeyframe = {
     */
   },
   do: function() {
-    self.scrollRate = $(window).scrollTop() / self.scrollKeyBit;
-    if (self.scrollRate < 101) {
+    this.scrollRate = ( Math.abs(keyframe.scrollPos.from - $(window).scrollTop()) ) / this.scrollKeyBit;
+    if (this.scrollRate < 101) {
       if (this.asc) {
         this.value = this.keyframe.to / 100 * this.scrollRate;
       } else if (!this.asc) {
