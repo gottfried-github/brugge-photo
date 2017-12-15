@@ -276,7 +276,7 @@ var ScrollKeyframe = {
 }
 
 var Menu = {
-  visible: true,
+  toggledOn: false,
   init: function() {
     var self = this;
     $('#menu svg').on('click touchend', function() {
@@ -287,30 +287,32 @@ var Menu = {
   toggle: function() {
     var spans = $('#menu span');
     var self = this;
-    if (this.visible) {
+    if (this.toggledOn) {
       spans.each(function() {
         var $this = $(this);
         $this.addClass('transition');
         $this.on('transitionend', function() {
           $this.removeClass('transition');
           $this.off('transitionend')
-          self.visible = false;
+          self.toggledOn = false;
         })
 
         $this.css('opacity', 0);
       })
-    } else if (!this.visible) {
-      spans.each(function() {
-        var $this = $(this);
-        $this.addClass('transition');
-        $this.on('transitionend', function() {
-          $this.removeClass('transition');
-          $this.off('transitionend')
-          self.visible = true;
-        })
+    } else if (!this.toggledOn) {
+      if ( !($(window).scrollTop() < 5) ) {
+        spans.each(function() {
+          var $this = $(this);
+          $this.addClass('transition');
+          $this.on('transitionend', function() {
+            $this.removeClass('transition');
+            $this.off('transitionend')
+            self.toggledOn = true;
+          })
 
-        $this.css('opacity', 1);
-      })
+          $this.css('opacity', 1);
+        })
+      }
     }
   }
 }
@@ -335,10 +337,12 @@ function initIndex() {
       callback: function(value, scrollRate) {
         //if (scrollRate > 90 && Menu.visible)
         //  return
-        if (scrollRate > 5 && Menu.visible) {
+        if (Menu.toggledOn) {
+          if (scrollRate < 5) {
+            console.log(scrollRate)
+            Menu.toggledOn = false;
+          }
           return;
-        } else if (scrollRate < 5 && !Menu.visible) {
-          Menu.visible = true;
         }
 
         var alpha = (100 - scrollRate) / 100;
