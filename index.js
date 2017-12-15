@@ -249,15 +249,24 @@ var ScrollKeyframe = {
     this.setScrollRate();
     if (this.scrollRate < 101) {
       if (this.asc) {
-        this.value = this.current.value.to / 100 * this.scrollRate;
+        this.value = parseInt(this.current.value.to / 100 * this.scrollRate);
+        if ((this.current.value.to - this.value) < 35) {
+          this.value = this.current.value.to
+        }
       } else if (!this.asc) {
         // ???
-        this.value = this.current.value.from - this.current.value.from / 100 * this.scrollRate;
+        this.value = parseInt(this.current.value.from - this.current.value.from / 100 * this.scrollRate);
+        if ((this.value - this.current.value.to) < 35) {
+          this.value = this.current.value.to
+        }
       }
 
       if ( (this.value >= this.current.value.from && this.value <= this.current.value.to)
         || (this.value >= this.current.value.to && this.value <= this.current.value.from) ) {
           this.setStyle();
+          if (this.current.callback) {
+            this.current.callback(this.value, this.scrollRate);
+          }
         }
     }
     // console.log('value: ', this.value, ', scrollRate: ', this.scrollRate, ', asc: ', this.asc)
@@ -269,6 +278,52 @@ var ScrollKeyframe = {
         'stroke': 'rgba('+ self.value +', '+ self.value +', '+ self.value +', 0.7)'
       })
     })
+  }
+}
+
+var Menu = {
+  toggledOn: false,
+  transitioning: false,
+  init: function() {
+    var self = this;
+    $('#menu svg').on('click touchend', function() {
+      self.toggle.call(self)
+    })
+  },
+  toggle: function() {
+    var spans = $('#menu span');
+    var self = this;
+    if (this.toggledOn) {
+      this.transitioning = true;
+      spans.each(function() {
+        var $this = $(this);
+        $this.addClass('transition');
+        $this.on('transitionend', function() {
+          $this.removeClass('transition');
+          $this.off('transitionend')
+          self.toggledOn = false;
+          self.transitioning = false;
+        })
+
+        $this.css('opacity', 0);
+      })
+    } else if (!this.toggledOn) {
+      if ( !($(window).scrollTop() < 5) ) {
+        this.transitioning = true;
+        spans.each(function() {
+          var $this = $(this);
+          $this.addClass('transition');
+          $this.on('transitionend', function() {
+            $this.removeClass('transition');
+            $this.off('transitionend')
+            self.toggledOn = true;
+            self.transitioning = false;
+          })
+
+          $this.css('opacity', 1);
+        })
+      }
+    }
   }
 }
 
@@ -288,27 +343,68 @@ function initIndex() {
         from: 0,
         to: keyfr1To
       },
-      value: {from: 255, to: 0}
+      value: {from: 255, to: 0},
+      callback: function(value, scrollRate) {
+        //if (scrollRate > 90 && Menu.visible)
+        //  return
+        $('#menu span').each(function() {
+          $(this).css({
+            'color': 'rgba('+ value +', '+ value +', '+ value +', 0.7)'
+          })
+        })
+
+        if (Menu.toggledOn) {
+          if (scrollRate < 5) {
+            console.log(scrollRate)
+            Menu.toggledOn = false;
+          }
+          return;
+        }
+
+        if (!Menu.transitioning) {
+          var alpha = (100 - scrollRate) / 100;
+          $('#menu span').each(function() {
+            $(this).css({
+              'opacity': alpha
+            })
+          })
+        }
+      }
     },
     {
       scrollPos: {
         from: $('.photos').offset().top,
         to: $('.photos').offset().top + 200
       },
-      value: {from: 0, to: 255}
+      value: {from: 0, to: 255},
+      callback: function(value, scrollRate) {
+        $('#menu span').each(function() {
+          $(this).css({
+            'color': 'rgba('+ value +', '+ value +', '+ value +', 0.7)'
+          })
+        })
+      }
     },
     {
       scrollPos: {
         from: $('.info').offset().top - 350,
         to: $('.info').offset().top
       },
-      value: {from: 255, to: 0}
+      value: {from: 255, to: 0},
+      callback: function(value, scrollRate) {
+        $('#menu span').each(function() {
+          $(this).css({
+            'color': 'rgba('+ value +', '+ value +', '+ value +', 0.7)'
+          })
+        })
+      }
     }
   ];
   ScrollKeyframe.init(keyframes, {
       el: $('#menu path'),
       prop: 'stroke'
   });
+  Menu.init()
 }
 
 $(document).ready(initIndex)
