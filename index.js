@@ -258,6 +258,9 @@ var ScrollKeyframe = {
       if ( (this.value >= this.current.value.from && this.value <= this.current.value.to)
         || (this.value >= this.current.value.to && this.value <= this.current.value.from) ) {
           this.setStyle();
+          if (this.current.callback) {
+            this.current.callback(this.value, this.scrollRate);
+          }
         }
     }
     // console.log('value: ', this.value, ', scrollRate: ', this.scrollRate, ', asc: ', this.asc)
@@ -269,6 +272,46 @@ var ScrollKeyframe = {
         'stroke': 'rgba('+ self.value +', '+ self.value +', '+ self.value +', 0.7)'
       })
     })
+  }
+}
+
+var Menu = {
+  visible: true,
+  init: function() {
+    var self = this;
+    $('#menu svg').on('click touchend', function() {
+      console.log('menu clicked')
+      self.toggle.call(self)
+    })
+  },
+  toggle: function() {
+    var spans = $('#menu span');
+    var self = this;
+    if (this.visible) {
+      spans.each(function() {
+        var $this = $(this);
+        $this.addClass('transition');
+        $this.on('transitionend', function() {
+          $this.removeClass('transition');
+          $this.off('transitionend')
+          self.visible = false;
+        })
+
+        $this.css('opacity', 0);
+      })
+    } else if (!this.visible) {
+      spans.each(function() {
+        var $this = $(this);
+        $this.addClass('transition');
+        $this.on('transitionend', function() {
+          $this.removeClass('transition');
+          $this.off('transitionend')
+          self.visible = true;
+        })
+
+        $this.css('opacity', 1);
+      })
+    }
   }
 }
 
@@ -288,7 +331,23 @@ function initIndex() {
         from: 0,
         to: keyfr1To
       },
-      value: {from: 255, to: 0}
+      value: {from: 255, to: 0},
+      callback: function(value, scrollRate) {
+        //if (scrollRate > 90 && Menu.visible)
+        //  return
+        if (scrollRate > 5 && Menu.visible) {
+          return;
+        } else if (scrollRate < 5 && !Menu.visible) {
+          Menu.visible = true;
+        }
+
+        var alpha = (100 - scrollRate) / 100;
+        $('#menu span').each(function() {
+          $(this).css({
+            'opacity': alpha
+          })
+        })
+      }
     },
     {
       scrollPos: {
@@ -309,6 +368,7 @@ function initIndex() {
       el: $('#menu path'),
       prop: 'stroke'
   });
+  Menu.init()
 }
 
 $(document).ready(initIndex)
