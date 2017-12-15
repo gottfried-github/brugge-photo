@@ -308,7 +308,8 @@ var Menu = {
         $this.css('opacity', 0);
       })
     } else if (!this.toggledOn) {
-      if ( !($(window).scrollTop() < 5) ) {
+      var condition = ($(window).width() > 650) ? !($(window).scrollTop() < 5) : true
+      if ( condition ) {
         this.transitioning = true;
         spans.each(function() {
           var $this = $(this);
@@ -345,30 +346,39 @@ function initIndex() {
       },
       value: {from: 255, to: 0},
       callback: function(value, scrollRate) {
-        //if (scrollRate > 90 && Menu.visible)
-        //  return
         $('#menu span').each(function() {
           $(this).css({
             'color': 'rgba('+ value +', '+ value +', '+ value +', 0.7)'
           })
         })
+        if ($(window).width() > 650) {
 
-        if (Menu.toggledOn) {
-          if (scrollRate < 5) {
-            console.log(scrollRate)
-            Menu.toggledOn = false;
+          if (Menu.toggledOn) {
+            if (scrollRate < 5) {
+              console.log(scrollRate)
+              Menu.toggledOn = false;
+            }
+            return;
           }
-          return;
-        }
 
-        if (!Menu.transitioning) {
-          var alpha = (100 - scrollRate) / 100;
-          $('#menu span').each(function() {
-            $(this).css({
-              'opacity': alpha
+          if (!Menu.transitioning) {
+            var alpha = (100 - scrollRate) / 100;
+
+            if (alpha > 0.88) {
+              alpha = 1;
+            } else if (alpha < 0.12) {
+              alpha = 0;
+            }
+
+            $('#menu span').each(function() {
+              $(this).css({
+                'opacity': alpha
+              })
             })
-          })
+          }
         }
+        //if (scrollRate > 90 && Menu.visible)
+        //  return
       }
     },
     {

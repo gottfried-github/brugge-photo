@@ -619,7 +619,14 @@ home page
 
 @media (max-width: 650px) {
   #menu {
+    /*
+    height: 100%;
     display: none;
+    */
+  }
+
+  #menu span {
+    opacity: 0;
   }
 
   .grid-item {
