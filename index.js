@@ -249,17 +249,15 @@ var ScrollKeyframe = {
     this.setScrollRate();
     if (this.scrollRate < 101) {
       if (this.asc) {
-        this.value = this.current.value.to / 100 * this.scrollRate;
+        this.value = parseInt(this.current.value.to / 100 * this.scrollRate);
         if ((this.current.value.to - this.value) < 35) {
           this.value = this.current.value.to
-          console.log("quantized")
         }
       } else if (!this.asc) {
         // ???
-        this.value = this.current.value.from - this.current.value.from / 100 * this.scrollRate;
+        this.value = parseInt(this.current.value.from - this.current.value.from / 100 * this.scrollRate);
         if ((this.value - this.current.value.to) < 35) {
           this.value = this.current.value.to
-          console.log("quantized")
         }
       }
 
@@ -289,7 +287,6 @@ var Menu = {
   init: function() {
     var self = this;
     $('#menu svg').on('click touchend', function() {
-      console.log('menu clicked')
       self.toggle.call(self)
     })
   },
@@ -370,7 +367,7 @@ function initIndex() {
             $(this).css({
               'opacity': alpha
             })
-          })  
+          })
         }
       }
     },
