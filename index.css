@@ -144,6 +144,14 @@ section {
   stroke-dasharray:none;
   stroke-opacity:1;
   stroke: rgba(255, 255, 255, 0.7);
+
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
   /*
   stroke: #ffdd55ff;
   box-shadow: 10px 5px 5px red;
@@ -153,6 +161,13 @@ section {
 }
 
 #menu svg { /* possibly, fill */
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
   /*
   margin: auto;
   box-shadow: $shadow;
