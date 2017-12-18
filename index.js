@@ -284,9 +284,10 @@ var ScrollKeyframe = {
 var Menu = {
   toggledOn: false,
   transitioning: false,
-  init: function() {
+  init: function(menu) {
+    this.$menu = menu;
     var self = this;
-    $('#menu svg').on('click touchend', function() {
+    this.$menu.on('click touchend', function() {
       self.toggle.call(self)
     })
   },
@@ -325,6 +326,45 @@ var Menu = {
         })
       }
     }
+  },
+  unsubscribe: function() {
+    this.$menu.off('click touchend');
+  },
+  subscribe: function() {
+    this.init(this.$menu);
+  }
+}
+
+var LargeView = {
+  init: function(dom, open, close, move, cbs) {
+    this.$dom = dom;
+    this.$open = open;
+    this.$close = close;
+    this.move = move;
+    this.cbs = cbs;
+  },
+  show: function() {
+    this.$dom.removeClass('noned');
+    this.move.resubscribe(this.$dom);
+    var self = this;
+    this.$dom.on('transitionend', function() {
+      self.$dom.off('transitionend');
+      self.$close.on('click touchend', function() {
+        self.hide();
+      })
+    });
+    this.$dom.removeClass('transparent');
+  },
+  hide: function() {
+    var self = this;
+    this.$dom.on('transitionend', function() {
+      self.$dom.off('transitionend');
+      self.$dom.addClass('noned');
+      self.$close.off('click touchend');
+      self.cbs.onhide();
+    });
+
+    this.$dom.addClass('transparent')
   }
 }
 
@@ -414,7 +454,8 @@ function initIndex() {
       el: $('#menu path'),
       prop: 'stroke'
   });
-  Menu.init()
+  Menu.init($('#menu svg'));
+  LargeView.init()
 }
 
 $(document).ready(initIndex)

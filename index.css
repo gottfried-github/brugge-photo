@@ -248,6 +248,22 @@ home page
   */
 }
 
+.large-view_box {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0px;
+  left: 0px;
+}
+
+/*
+.large-view {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+*/
+
 .photo {
   position: absolute;
   width: 100%;
@@ -259,6 +275,12 @@ home page
   /*
   position: absolute;
   */
+}
+
+.large-photo {
+  position: auto;
+  background-size: contain;
+  background-image: url('photos/02-21_20140108170653_3959947_large.jpg');
 }
 
 .photo-top {
@@ -316,6 +338,10 @@ home page
 
         /*
         */
+}
+
+.noned {
+  display: none;
 }
 
 .ztop {
