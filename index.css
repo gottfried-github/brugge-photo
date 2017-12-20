@@ -254,6 +254,10 @@ home page
   height: 100%;
   top: 0px;
   left: 0px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 /*
@@ -279,9 +283,12 @@ home page
 
 .large-photo {
   position: relative;
+  /*
+  margin: auto;
   background-color: grey;
   background-size: contain;
   background-image: url('photos/02-21_20140108170653_3959947_large.jpg');
+  */
 }
 
 .photo-top {
