@@ -368,6 +368,7 @@ var LargeView = {
         self.show.call(self);
       })
       self.dom.$photo.attr('src', $picture.attr('src'))
+      self.hwaccelerate();
     }
 
     img.onload = function() {
@@ -458,6 +459,21 @@ var LargeView = {
     // } else if (screenRatio < 1) {
     //
     // }
+  },
+  hwaccelerate: function() {
+    this.dom.$photo.css({
+      '-webkit-perspective': 1000,
+      '-moz-perspective': 1000,
+      '-ms-perspective': 1000,
+      '-o-perspective': 1000,
+      'perspective': 1000,
+
+      '-webkit-backface-visibility': 'hidden',
+      '-moz-backface-visibility': 'hidden',
+      '-ms-backface-visibility': 'hidden',
+      '-o-backface-visibility': 'hidden',
+      'backface-visibility': 'hidden'
+    })
   }
 }
 
