@@ -336,35 +336,42 @@ var Menu = {
 }
 
 var LargeView = {
-  init: function(dom, open, close, move, cbs) {
-    this.$dom = dom;
-    this.$open = open;
-    this.$close = close;
+  init: function(dom, open, close, move) {
     this.move = move;
-    this.cbs = cbs;
+
+    this.dom = dom;
+    this.open = open;
+    this.close = close;
+
+    var self = this;
+    this.open.$els.on('click touchend', function() {
+      self.show.call(self);
+    })
   },
   show: function() {
-    this.$dom.removeClass('noned');
-    this.move.resubscribe(this.$dom);
+    this.dom.$box.removeClass('noned');
+    this.move.resubscribe(this.dom.$photo);
     var self = this;
-    this.$dom.on('transitionend', function() {
-      self.$dom.off('transitionend');
-      self.$close.on('click touchend', function() {
-        self.hide();
+    this.dom.$box.on('transitionend', function() {
+      self.dom.$box.off('transitionend');
+      self.close.unsubscribe.call(self.close.$button);
+      self.close.$button.on('click touchend', function() {
+        self.hide.call(self);
       })
     });
-    this.$dom.removeClass('transparent');
+    this.dom.$box.removeClass('transparent');
   },
   hide: function() {
     var self = this;
-    this.$dom.on('transitionend', function() {
-      self.$dom.off('transitionend');
-      self.$dom.addClass('noned');
-      self.$close.off('click touchend');
-      self.cbs.onhide();
+    this.dom.$box.on('transitionend', function() {
+      self.dom.$box.off('transitionend');
+      self.dom.$box.addClass('noned');
+      self.close.$button.off('click touchend');
+      self.close.subscribe.call(self.close.$button);
+      // self.cbs.onhide();
     });
 
-    this.$dom.addClass('transparent')
+    this.dom.$box.addClass('transparent');
   }
 }
 
@@ -455,7 +462,29 @@ function initIndex() {
       prop: 'stroke'
   });
   Menu.init($('#menu svg'));
-  LargeView.init()
+
+  var dom = {
+    $box: $('.large-view_box'),
+    $photo: $('.large-photo')
+  };
+
+  var open = {
+    $els: $('.grid-item')
+  };
+
+  var close = {
+    $button: Menu.$menu,
+    subscribe: function() {
+      Menu.subscribe();
+    },
+    unsubscribe: function() {
+      Menu.unsubscribe();
+    }
+  }
+
+  var move = new Move(dom.$photo, dom.$photo, 'click touchend');
+
+  LargeView.init(dom, open, close, move)
 }
 
 $(document).ready(initIndex)

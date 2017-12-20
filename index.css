@@ -278,7 +278,8 @@ home page
 }
 
 .large-photo {
-  position: auto;
+  position: relative;
+  background-color: grey;
   background-size: contain;
   background-image: url('photos/02-21_20140108170653_3959947_large.jpg');
 }
