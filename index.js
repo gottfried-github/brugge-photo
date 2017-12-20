@@ -345,18 +345,50 @@ var LargeView = {
 
     var self = this;
 
-    this.dom.$photo.on('load', function() {
-      self.show.call(self)
-    });
+    // this.dom.$photo.on('load', function() {
+    //   console.log('initial bind')
+    //   self.show.call(self)
+    // });
 
     this.open.$els.on('click touchend', function() {
       var url = $(this).css('background-image').replace('url(','').replace(')','').replace(/\"/gi, "");
-      self.putUrl.call(self, url);
+      self.go.call(self, url);
     });
   },
-  putUrl: function(url) {
-    console.log('putUrl', url)
-    this.dom.$photo.attr('src', url)
+  go: function(url) {
+    console.log('gone', url)
+    var self = this;
+
+    var img = document.createElement('img');
+
+    var setUrl = function($picture) {
+      self.dom.$photo.on('load', function() {
+        $(this).width($picture.width() + 'px')
+        $(this).height($picture.height() + 'px')
+        self.show.call(self);
+      })
+      self.dom.$photo.attr('src', $picture.attr('src'))
+    }
+
+    img.onload = function() {
+      // {
+      //   dom: this,
+      //   width: this.width,
+      //   height: this.height
+      // }
+
+      var $picture = self.fitPhoto.call(self, this);
+      setUrl($picture)
+      console.log($picture)
+      // console.log(self.dom.$photo.replaceWith($picture))
+      // self.dom.$photo = $('.large-view_box img');
+      console.log(self.dom.$photo)
+      // self.dom.$photo = $(this);
+    }
+
+    img.src = url;
+    // $(img).attr('src', url);
+    // this.dom.$photo.attr('src', url)
   },
   show: function(url) {
 
@@ -384,7 +416,7 @@ var LargeView = {
 
     this.dom.$box.addClass('transparent');
   },
-  sizeImage: function() {
+  fitPhoto: function(picture) {
     var $window = $(window)
 
     var theWindow = {
@@ -393,22 +425,31 @@ var LargeView = {
     }
 
     // we define our ratio based on width:
-    window.ratio = theWindow.width / theWindow.height;
+    theWindow.ratio = theWindow.width / theWindow.height;
 
-    var picture = {
-      width: this.dom.$photo.width(),
-      height: this.dom.$photo.height()
-    }
-    picture.ratio = picture.width / picture.height;
+    // var thePicture = {
+    //  width: this.dom.$photo.width(),
+    //  height: this.dom.$photo.height()
+    // }
 
-    if (pictureRatio > screenRatio) {
+    var pictureRatio = picture.width / picture.height;
+    console.log(theWindow, picture)
+
+    if (pictureRatio > theWindow.ratio) {
       // fit picture by width
-      this.dom.$photo.width(theWindow.width)
-      this.dom.$photo.height(width / pictureRatio)
-    } else if (pictureRatio < screenRatio) {
+      $(picture).width(theWindow.width + 'px')
+      $(picture).height(theWindow.width / pictureRatio + 'px')
+      return $(picture);
+      // this.dom.$photo.width()
+      // this.dom.$photo.height()
+    } else if (pictureRatio < theWindow.ratio) {
       // fit picture by height
-      this.dom.$photo.width(height * pictureRatio)
-      this.dom.$photo.height(theWindow.height)
+
+      $(picture).width(theWindow.height * pictureRatio + 'px')
+      $(picture).height(theWindow.height + 'px')
+      return $(picture);
+      // this.dom.$photo.width()
+      // this.dom.$photo.height()
     }
 
     // if ratio > 1 then the screen is landscape
