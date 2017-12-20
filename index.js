@@ -344,11 +344,22 @@ var LargeView = {
     this.close = close;
 
     var self = this;
+
+    this.dom.$photo.on('load', function() {
+      self.show.call(self)
+    });
+
     this.open.$els.on('click touchend', function() {
-      self.show.call(self);
-    })
+      var url = $(this).css('background-image').replace('url(','').replace(')','').replace(/\"/gi, "");
+      self.putUrl.call(self, url);
+    });
   },
-  show: function() {
+  putUrl: function(url) {
+    console.log('putUrl', url)
+    this.dom.$photo.attr('src', url)
+  },
+  show: function(url) {
+
     this.dom.$box.removeClass('noned');
     this.move.resubscribe(this.dom.$photo);
     var self = this;
