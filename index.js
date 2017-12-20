@@ -284,9 +284,10 @@ var ScrollKeyframe = {
 var Menu = {
   toggledOn: false,
   transitioning: false,
-  init: function() {
+  init: function(menu) {
+    this.$menu = menu;
     var self = this;
-    $('#menu svg').on('click touchend', function() {
+    this.$menu.on('click touchend', function() {
       self.toggle.call(self)
     })
   },
@@ -325,6 +326,154 @@ var Menu = {
         })
       }
     }
+  },
+  unsubscribe: function() {
+    this.$menu.off('click touchend');
+  },
+  subscribe: function() {
+    this.init(this.$menu);
+  }
+}
+
+var LargeView = {
+  init: function(dom, open, close, move) {
+    this.move = move;
+
+    this.dom = dom;
+    this.open = open;
+    this.close = close;
+
+    var self = this;
+
+    // this.dom.$photo.on('load', function() {
+    //   console.log('initial bind')
+    //   self.show.call(self)
+    // });
+
+    this.open.$els.on('click touchend', function() {
+      var url = $(this).css('background-image').replace('url(','').replace(')','').replace(/\"/gi, "");
+      self.go.call(self, url);
+    });
+  },
+  go: function(url) {
+    console.log('gone', url)
+    var self = this;
+
+    var img = document.createElement('img');
+
+    var setUrl = function($picture) {
+      self.dom.$photo.on('load', function() {
+        $(this).width($picture.width() + 'px')
+        $(this).height($picture.height() + 'px')
+        self.show.call(self);
+      })
+      self.dom.$photo.attr('src', $picture.attr('src'))
+      self.hwaccelerate();
+    }
+
+    img.onload = function() {
+      // {
+      //   dom: this,
+      //   width: this.width,
+      //   height: this.height
+      // }
+
+      var $picture = self.fitPhoto.call(self, this);
+      setUrl($picture)
+      console.log($picture)
+      // console.log(self.dom.$photo.replaceWith($picture))
+      // self.dom.$photo = $('.large-view_box img');
+      console.log(self.dom.$photo)
+      // self.dom.$photo = $(this);
+    }
+
+    img.src = url;
+    // $(img).attr('src', url);
+    // this.dom.$photo.attr('src', url)
+  },
+  show: function(url) {
+
+    this.dom.$box.removeClass('noned');
+    this.move.resubscribe(this.dom.$photo);
+    var self = this;
+    this.dom.$box.on('transitionend', function() {
+      self.dom.$box.off('transitionend');
+      self.close.unsubscribe.call(self.close.$button);
+      self.close.$button.on('click touchend', function() {
+        self.hide.call(self);
+      })
+    });
+    this.dom.$box.removeClass('transparent');
+  },
+  hide: function() {
+    var self = this;
+    this.dom.$box.on('transitionend', function() {
+      self.dom.$box.off('transitionend');
+      self.dom.$box.addClass('noned');
+      self.close.$button.off('click touchend');
+      self.close.subscribe.call(self.close.$button);
+      // self.cbs.onhide();
+    });
+
+    this.dom.$box.addClass('transparent');
+  },
+  fitPhoto: function(picture) {
+    var $window = $(window)
+
+    var theWindow = {
+      width: $window.width(),
+      height: $window.height()
+    }
+
+    // we define our ratio based on width:
+    theWindow.ratio = theWindow.width / theWindow.height;
+
+    // var thePicture = {
+    //  width: this.dom.$photo.width(),
+    //  height: this.dom.$photo.height()
+    // }
+
+    var pictureRatio = picture.width / picture.height;
+    console.log(theWindow, picture)
+
+    if (pictureRatio > theWindow.ratio) {
+      // fit picture by width
+      $(picture).width(theWindow.width + 'px')
+      $(picture).height(theWindow.width / pictureRatio + 'px')
+      return $(picture);
+      // this.dom.$photo.width()
+      // this.dom.$photo.height()
+    } else if (pictureRatio < theWindow.ratio) {
+      // fit picture by height
+
+      $(picture).width(theWindow.height * pictureRatio + 'px')
+      $(picture).height(theWindow.height + 'px')
+      return $(picture);
+      // this.dom.$photo.width()
+      // this.dom.$photo.height()
+    }
+
+    // if ratio > 1 then the screen is landscape
+    // if (screenRatio > 1) {
+    //
+    // } else if (screenRatio < 1) {
+    //
+    // }
+  },
+  hwaccelerate: function() {
+    this.dom.$photo.css({
+      '-webkit-perspective': 1000,
+      '-moz-perspective': 1000,
+      '-ms-perspective': 1000,
+      '-o-perspective': 1000,
+      'perspective': 1000,
+
+      '-webkit-backface-visibility': 'hidden',
+      '-moz-backface-visibility': 'hidden',
+      '-ms-backface-visibility': 'hidden',
+      '-o-backface-visibility': 'hidden',
+      'backface-visibility': 'hidden'
+    })
   }
 }
 
@@ -414,7 +563,30 @@ function initIndex() {
       el: $('#menu path'),
       prop: 'stroke'
   });
-  Menu.init()
+  Menu.init($('#menu svg'));
+
+  var dom = {
+    $box: $('.large-view_box'),
+    $photo: $('.large-photo')
+  };
+
+  var open = {
+    $els: $('.grid-item')
+  };
+
+  var close = {
+    $button: Menu.$menu,
+    subscribe: function() {
+      Menu.subscribe();
+    },
+    unsubscribe: function() {
+      Menu.unsubscribe();
+    }
+  }
+
+  var move = new Move(dom.$photo, $('#scale_triggerer'), 'click touchend');
+
+  LargeView.init(dom, open, close, move)
 }
 
 $(document).ready(initIndex)
