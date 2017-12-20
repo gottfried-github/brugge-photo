@@ -345,18 +345,50 @@ var LargeView = {
 
     var self = this;
 
-    this.dom.$photo.on('load', function() {
-      self.show.call(self)
-    });
+    // this.dom.$photo.on('load', function() {
+    //   console.log('initial bind')
+    //   self.show.call(self)
+    // });
 
     this.open.$els.on('click touchend', function() {
       var url = $(this).css('background-image').replace('url(','').replace(')','').replace(/\"/gi, "");
-      self.putUrl.call(self, url);
+      self.go.call(self, url);
     });
   },
-  putUrl: function(url) {
-    console.log('putUrl', url)
-    this.dom.$photo.attr('src', url)
+  go: function(url) {
+    console.log('gone', url)
+    var self = this;
+
+    var img = document.createElement('img');
+
+    var setUrl = function($picture) {
+      self.dom.$photo.on('load', function() {
+        $(this).width($picture.width() + 'px')
+        $(this).height($picture.height() + 'px')
+        self.show.call(self);
+      })
+      self.dom.$photo.attr('src', $picture.attr('src'))
+    }
+
+    img.onload = function() {
+      // {
+      //   dom: this,
+      //   width: this.width,
+      //   height: this.height
+      // }
+
+      var $picture = self.fitPhoto.call(self, this);
+      setUrl($picture)
+      console.log($picture)
+      // console.log(self.dom.$photo.replaceWith($picture))
+      // self.dom.$photo = $('.large-view_box img');
+      console.log(self.dom.$photo)
+      // self.dom.$photo = $(this);
+    }
+
+    img.src = url;
+    // $(img).attr('src', url);
+    // this.dom.$photo.attr('src', url)
   },
   show: function(url) {
 
@@ -383,6 +415,49 @@ var LargeView = {
     });
 
     this.dom.$box.addClass('transparent');
+  },
+  fitPhoto: function(picture) {
+    var $window = $(window)
+
+    var theWindow = {
+      width: $window.width(),
+      height: $window.height()
+    }
+
+    // we define our ratio based on width:
+    theWindow.ratio = theWindow.width / theWindow.height;
+
+    // var thePicture = {
+    //  width: this.dom.$photo.width(),
+    //  height: this.dom.$photo.height()
+    // }
+
+    var pictureRatio = picture.width / picture.height;
+    console.log(theWindow, picture)
+
+    if (pictureRatio > theWindow.ratio) {
+      // fit picture by width
+      $(picture).width(theWindow.width + 'px')
+      $(picture).height(theWindow.width / pictureRatio + 'px')
+      return $(picture);
+      // this.dom.$photo.width()
+      // this.dom.$photo.height()
+    } else if (pictureRatio < theWindow.ratio) {
+      // fit picture by height
+
+      $(picture).width(theWindow.height * pictureRatio + 'px')
+      $(picture).height(theWindow.height + 'px')
+      return $(picture);
+      // this.dom.$photo.width()
+      // this.dom.$photo.height()
+    }
+
+    // if ratio > 1 then the screen is landscape
+    // if (screenRatio > 1) {
+    //
+    // } else if (screenRatio < 1) {
+    //
+    // }
   }
 }
 
@@ -493,7 +568,7 @@ function initIndex() {
     }
   }
 
-  var move = new Move(dom.$photo, dom.$photo, 'click touchend');
+  var move = new Move(dom.$photo, $('#scale_triggerer'), 'click touchend');
 
   LargeView.init(dom, open, close, move)
 }
