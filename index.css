@@ -160,20 +160,6 @@ section {
   */
 }
 
-#menu svg { /* possibly, fill */
-  -webkit-touch-callout: none; /* iOS Safari */
-    -webkit-user-select: none; /* Safari */
-     -khtml-user-select: none; /* Konqueror HTML */
-       -moz-user-select: none; /* Firefox */
-        -ms-user-select: none; /* Internet Explorer/Edge */
-            user-select: none; /* Non-prefixed version, currently
-                                  supported by Chrome and Opera */
-  /*
-  margin: auto;
-  box-shadow: $shadow;
-  */
-}
-
 #menu svg {
   background-color: rgba(255, 255, 255, 0);
   float: left;
@@ -181,6 +167,13 @@ section {
   right: 30px;
   margin-top: 2px;
   clear: left;
+
+  -webkit-touch-callout: none;
+    -webkit-user-select: none;
+     -khtml-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
   /*
   display: inline;
   height: 23px;
@@ -191,6 +184,18 @@ section {
   margin: 25px 0px;
   padding: 25px 0px;
   */
+}
+
+#scale_triggerer {
+  position: fixed;
+  right: 30px;
+  bottom: 30px;
+  width: 20px;
+  height: 18px;
+
+  z-index: 2;
+
+  background-color: black;
 }
 
 footer {

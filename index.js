@@ -383,6 +383,40 @@ var LargeView = {
     });
 
     this.dom.$box.addClass('transparent');
+  },
+  sizeImage: function() {
+    var $window = $(window)
+
+    var theWindow = {
+      width: $window.width(),
+      height: $window.height()
+    }
+
+    // we define our ratio based on width:
+    window.ratio = theWindow.width / theWindow.height;
+
+    var picture = {
+      width: this.dom.$photo.width(),
+      height: this.dom.$photo.height()
+    }
+    picture.ratio = picture.width / picture.height;
+
+    if (pictureRatio > screenRatio) {
+      // fit picture by width
+      this.dom.$photo.width(theWindow.width)
+      this.dom.$photo.height(width / pictureRatio)
+    } else if (pictureRatio < screenRatio) {
+      // fit picture by height
+      this.dom.$photo.width(height * pictureRatio)
+      this.dom.$photo.height(theWindow.height)
+    }
+
+    // if ratio > 1 then the screen is landscape
+    // if (screenRatio > 1) {
+    //
+    // } else if (screenRatio < 1) {
+    //
+    // }
   }
 }
 
@@ -493,7 +527,7 @@ function initIndex() {
     }
   }
 
-  var move = new Move(dom.$photo, dom.$photo, 'click touchend');
+  var move = new Move(dom.$photo, $('#scale_triggerer'), 'click touchend');
 
   LargeView.init(dom, open, close, move)
 }
