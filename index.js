@@ -477,6 +477,13 @@ var LargeView = {
   }
 }
 
+var plusminus = {
+  v: $('#scale_triggerer'),
+  minus: function() {
+
+  }
+}
+
 function initIndex() {
   // Index.gridSetup();
   // Markup.log(JSON.stringify(Modernizr))
