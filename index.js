@@ -287,7 +287,7 @@ var Menu = {
   init: function(menu) {
     this.$menu = menu;
     var self = this;
-    this.$menu.on('click touchend', function() {
+    this.$menu.on('click', function() {
       self.toggle.call(self)
     })
   },
@@ -328,7 +328,7 @@ var Menu = {
     }
   },
   unsubscribe: function() {
-    this.$menu.off('click touchend');
+    this.$menu.off('click');
   },
   subscribe: function() {
     this.init(this.$menu);
@@ -350,7 +350,7 @@ var LargeView = {
     //   self.show.call(self)
     // });
 
-    this.open.$els.on('click touchend', function() {
+    this.open.$els.on('click', function() {
       var url = $(this).css('background-image').replace('url(','').replace(')','').replace(/\"/gi, "");
       self.go.call(self, url);
     });
@@ -399,7 +399,7 @@ var LargeView = {
     this.dom.$box.on('transitionend', function() {
       self.dom.$box.off('transitionend');
       self.close.unsubscribe.call(self.close.$button);
-      self.close.$button.on('click touchend', function() {
+      self.close.$button.on('click', function() {
         self.hide.call(self);
       })
     });
@@ -410,7 +410,7 @@ var LargeView = {
     this.dom.$box.on('transitionend', function() {
       self.dom.$box.off('transitionend');
       self.dom.$box.addClass('noned');
-      self.close.$button.off('click touchend');
+      self.close.$button.off('click');
       self.close.subscribe.call(self.close.$button);
       // self.cbs.onhide();
     });
@@ -584,7 +584,7 @@ function initIndex() {
     }
   }
 
-  var move = new Move(dom.$photo, $('#scale_triggerer'), 'click touchend');
+  var move = new Move(dom.$photo, $('#scale_triggerer'), 'click');
 
   LargeView.init(dom, open, close, move)
 }
