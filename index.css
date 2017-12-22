@@ -248,6 +248,8 @@ home page
   height: 100%;
   top: 0px;
   left: 0px;
+  overflow: hidden;
+  z-index: 3;
 
   display: flex;
   justify-content: center;
@@ -297,7 +299,14 @@ home page
   z-index: 2;
 }
 
-#scale_triggerer {
+.triggerer_box.close {
+  top: 18px;
+  right: 30px;
+  transform: rotate(45deg);
+  z-index: 2;
+}
+
+.scale_triggerer {
   position: relative;
   width: 100%;
   height: 100%;
@@ -307,12 +316,12 @@ home page
   */
 }
 
-#scale_triggerer svg {
+.scale_triggerer svg {
   position: absolute;
   top: 0px;
 }
 
-#scale_triggerer path {
+.scale_triggerer path {
   opacity: 1;
 
   fill: none;
@@ -326,7 +335,7 @@ home page
   stroke-dashoffset: 0;
   stroke-opacity: 1;
 
-  stroke: rgba(255, 255, 255, 0.7);
+  stroke: rgba(255, 255, 255, 1);
 
   /*
     fill:none;
@@ -351,7 +360,7 @@ home page
 
 
 .sign-path_v-svg {
-  transition: transform 0.5s;
+  transition: transform 0.2s;
 }
 
 .scale-v {
@@ -406,10 +415,10 @@ home page
 
 .transition {
 
-  -webkit-transition: all 1400ms cubic-bezier(0.255, 0.185, 0.840, 0.200);
-     -moz-transition: all 1400ms cubic-bezier(0.255, 0.185, 0.840, 0.200);
-       -o-transition: all 1400ms cubic-bezier(0.255, 0.185, 0.840, 0.200);
-          transition: all 1400ms cubic-bezier(0.255, 0.185, 0.840, 0.200);
+  -webkit-transition: opacity 1400ms cubic-bezier(0.255, 0.185, 0.840, 0.200);
+     -moz-transition: opacity 1400ms cubic-bezier(0.255, 0.185, 0.840, 0.200);
+       -o-transition: opacity 1400ms cubic-bezier(0.255, 0.185, 0.840, 0.200);
+          transition: opacity 1400ms cubic-bezier(0.255, 0.185, 0.840, 0.200);
 
         /*
         */

@@ -154,7 +154,6 @@ var Markup = {
     }
 
     this.markup += value + this.br;
-    console.log(value)
     this.el.html(this.markup)
   },
   turnOff: function() {
@@ -287,7 +286,7 @@ var Menu = {
   init: function(menu) {
     this.$menu = menu;
     var self = this;
-    this.$menu.on('click touchend', function() {
+    this.$menu.on('click', function() {
       self.toggle.call(self)
     })
   },
@@ -328,7 +327,7 @@ var Menu = {
     }
   },
   unsubscribe: function() {
-    this.$menu.off('click touchend');
+    this.$menu.off('click');
   },
   subscribe: function() {
     this.init(this.$menu);
@@ -336,12 +335,13 @@ var Menu = {
 }
 
 var LargeView = {
-  init: function(dom, open, close, move) {
+  init: function(dom, open, close, move, cbs) {
     this.move = move;
 
     this.dom = dom;
     this.open = open;
     this.close = close;
+    this.cbs = cbs;
 
     var self = this;
 
@@ -350,13 +350,12 @@ var LargeView = {
     //   self.show.call(self)
     // });
 
-    this.open.$els.on('click touchend', function() {
+    this.open.$els.on('click', function() {
       var url = $(this).css('background-image').replace('url(','').replace(')','').replace(/\"/gi, "");
       self.go.call(self, url);
     });
   },
   go: function(url) {
-    console.log('gone', url)
     var self = this;
 
     var img = document.createElement('img');
@@ -380,10 +379,8 @@ var LargeView = {
 
       var $picture = self.fitPhoto.call(self, this);
       setUrl($picture)
-      console.log($picture)
       // console.log(self.dom.$photo.replaceWith($picture))
       // self.dom.$photo = $('.large-view_box img');
-      console.log(self.dom.$photo)
       // self.dom.$photo = $(this);
     }
 
@@ -392,6 +389,8 @@ var LargeView = {
     // this.dom.$photo.attr('src', url)
   },
   show: function(url) {
+    if (typeof(this.cbs.beforeShow) === 'function')
+      this.cbs.beforeShow();
 
     this.dom.$box.removeClass('noned');
     this.move.resubscribe(this.dom.$photo);
@@ -399,19 +398,28 @@ var LargeView = {
     this.dom.$box.on('transitionend', function() {
       self.dom.$box.off('transitionend');
       self.close.unsubscribe.call(self.close.$button);
-      self.close.$button.on('click touchend', function() {
+      self.close.$button.on('click', function() {
         self.hide.call(self);
       })
     });
     this.dom.$box.removeClass('transparent');
+
+    if (typeof(this.cbs.afterShow) === 'function')
+      this.cbs.afterShow();
   },
   hide: function() {
+    if (typeof(this.cbs.beforeHide) === 'function')
+      this.cbs.beforeHide();
+
     var self = this;
     this.dom.$box.on('transitionend', function() {
       self.dom.$box.off('transitionend');
       self.dom.$box.addClass('noned');
       self.close.$button.off('click');
       self.close.subscribe.call(self.close.$button);
+
+      if (typeof(self.cbs.afterHide) === 'function')
+        self.cbs.afterHide();
       // self.cbs.onhide();
     });
 
@@ -434,7 +442,6 @@ var LargeView = {
     // }
 
     var pictureRatio = picture.width / picture.height;
-    console.log(theWindow, picture)
 
     if (pictureRatio > theWindow.ratio) {
       // fit picture by width
@@ -478,11 +485,12 @@ var LargeView = {
 }
 
 var plusminus = {
-  v: $('#scale_triggerer .sign-path_v-svg'),
+  v: $('.scale_triggerer.to-scale .sign-path_v-svg'),
   scaledUp: false,
+  scaling: false,
   subscribe: function() {
     var self = this;
-    $('#scale_triggerer').on('click', function() {
+    $('.scale_triggerer.to-scale').on('click', function() {
       self.do.call(self)
     })
   },
@@ -494,7 +502,6 @@ var plusminus = {
     })
 
     this.v.addClass("scale-v");
-    console.log('scaleUp', this.v)
   },
   scaleDown: function() {
     var self = this;
@@ -504,7 +511,6 @@ var plusminus = {
     })
 
     this.v.removeClass("scale-v");
-    console.log('scaleDown', this)
   },
   do: function() {
     if (!this.scaledUp) {
@@ -514,6 +520,7 @@ var plusminus = {
     }
   },
   reset: function() {
+    this.v.removeClass("scale-v");
     this.scaledUp = false;
   }
 }
@@ -545,7 +552,6 @@ function initIndex() {
 
           if (Menu.toggledOn) {
             if (scrollRate < 5) {
-              console.log(scrollRate)
               Menu.toggledOn = false;
             }
             return;
@@ -616,25 +622,51 @@ function initIndex() {
   };
 
   var close = {
-    $button: Menu.$menu,
+    $button: $('.triggerer_box.close'), // Menu.$menu
     subscribe: function() {
-      Menu.subscribe();
+      // Menu.subscribe();
     },
     unsubscribe: function() {
       plusminus.reset();
-      Menu.unsubscribe();
+      // Menu.unsubscribe();
     }
   }
   var triggerer = {
-    $el: $('#scale_triggerer'),
+    $el: $('.scale_triggerer.to-scale'),
     cb: function() {
       plusminus.do();
     }
   }
 
-  var move = new Move(dom.$photo, triggerer, 'click touchend');
+  var move = new Move(dom.$photo, triggerer, 'click');
 
-  LargeView.init(dom, open, close, move)
+  LargeView.init(dom, open, close, move, {
+    beforeShow: function() {
+      var menu = $('#menu svg')
+      menu.addClass('transition')
+      menu.on('transitionend', function() {
+        menu.css('display', 'none')
+        menu.off('transitionend')
+        menu.removeClass('transition')
+      })
+
+      menu.addClass('transparent')
+    },
+    afterHide: function() {
+      var menu = $('#menu svg')
+      menu.addClass('transition')
+      menu.on('transitionend', function() {
+        menu.removeClass('transition')
+        menu.off('transitionend')
+      })
+
+      menu.css('display', 'block')
+      setTimeout(function() {
+        menu.removeClass('transparent')
+      }, 10)
+    }
+  })
+
   // plusminus.subscribe();
 }
 
