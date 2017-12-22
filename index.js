@@ -154,7 +154,6 @@ var Markup = {
     }
 
     this.markup += value + this.br;
-    console.log(value)
     this.el.html(this.markup)
   },
   turnOff: function() {
@@ -336,12 +335,13 @@ var Menu = {
 }
 
 var LargeView = {
-  init: function(dom, open, close, move) {
+  init: function(dom, open, close, move, cbs) {
     this.move = move;
 
     this.dom = dom;
     this.open = open;
     this.close = close;
+    this.cbs = cbs;
 
     var self = this;
 
@@ -356,7 +356,6 @@ var LargeView = {
     });
   },
   go: function(url) {
-    console.log('gone', url)
     var self = this;
 
     var img = document.createElement('img');
@@ -380,10 +379,8 @@ var LargeView = {
 
       var $picture = self.fitPhoto.call(self, this);
       setUrl($picture)
-      console.log($picture)
       // console.log(self.dom.$photo.replaceWith($picture))
       // self.dom.$photo = $('.large-view_box img');
-      console.log(self.dom.$photo)
       // self.dom.$photo = $(this);
     }
 
@@ -392,6 +389,8 @@ var LargeView = {
     // this.dom.$photo.attr('src', url)
   },
   show: function(url) {
+    if (typeof(this.cbs.beforeShow) === 'function')
+      this.cbs.beforeShow();
 
     this.dom.$box.removeClass('noned');
     this.move.resubscribe(this.dom.$photo);
@@ -404,14 +403,23 @@ var LargeView = {
       })
     });
     this.dom.$box.removeClass('transparent');
+
+    if (typeof(this.cbs.afterShow) === 'function')
+      this.cbs.afterShow();
   },
   hide: function() {
+    if (typeof(this.cbs.beforeHide) === 'function')
+      this.cbs.beforeHide();
+
     var self = this;
     this.dom.$box.on('transitionend', function() {
       self.dom.$box.off('transitionend');
       self.dom.$box.addClass('noned');
       self.close.$button.off('click');
       self.close.subscribe.call(self.close.$button);
+
+      if (typeof(self.cbs.afterHide) === 'function')
+        self.cbs.afterHide();
       // self.cbs.onhide();
     });
 
@@ -434,7 +442,6 @@ var LargeView = {
     // }
 
     var pictureRatio = picture.width / picture.height;
-    console.log(theWindow, picture)
 
     if (pictureRatio > theWindow.ratio) {
       // fit picture by width
@@ -477,6 +484,47 @@ var LargeView = {
   }
 }
 
+var plusminus = {
+  v: $('.scale_triggerer.to-scale .sign-path_v-svg'),
+  scaledUp: false,
+  scaling: false,
+  subscribe: function() {
+    var self = this;
+    $('.scale_triggerer.to-scale').on('click', function() {
+      self.do.call(self)
+    })
+  },
+  scaleUp: function() {
+    var self = this;
+    this.v.on('transitionend', function() {
+      self.scaledUp = true;
+      self.v.off('transitionend')
+    })
+
+    this.v.addClass("scale-v");
+  },
+  scaleDown: function() {
+    var self = this;
+    this.v.on('transitionend', function() {
+      self.scaledUp = false;
+      self.v.off('transitionend')
+    })
+
+    this.v.removeClass("scale-v");
+  },
+  do: function() {
+    if (!this.scaledUp) {
+      this.scaleUp();
+    } else if (this.scaledUp) {
+      this.scaleDown();
+    }
+  },
+  reset: function() {
+    this.v.removeClass("scale-v");
+    this.scaledUp = false;
+  }
+}
+
 function initIndex() {
   // Index.gridSetup();
   // Markup.log(JSON.stringify(Modernizr))
@@ -504,7 +552,6 @@ function initIndex() {
 
           if (Menu.toggledOn) {
             if (scrollRate < 5) {
-              console.log(scrollRate)
               Menu.toggledOn = false;
             }
             return;
@@ -575,18 +622,52 @@ function initIndex() {
   };
 
   var close = {
-    $button: Menu.$menu,
+    $button: $('.triggerer_box.close'), // Menu.$menu
     subscribe: function() {
-      Menu.subscribe();
+      // Menu.subscribe();
     },
     unsubscribe: function() {
-      Menu.unsubscribe();
+      plusminus.reset();
+      // Menu.unsubscribe();
+    }
+  }
+  var triggerer = {
+    $el: $('.scale_triggerer.to-scale'),
+    cb: function() {
+      plusminus.do();
     }
   }
 
-  var move = new Move(dom.$photo, $('#scale_triggerer'), 'click');
+  var move = new Move(dom.$photo, triggerer, 'click');
 
-  LargeView.init(dom, open, close, move)
+  LargeView.init(dom, open, close, move, {
+    beforeShow: function() {
+      var menu = $('#menu svg')
+      menu.addClass('transition')
+      menu.on('transitionend', function() {
+        menu.css('display', 'none')
+        menu.off('transitionend')
+        menu.removeClass('transition')
+      })
+
+      menu.addClass('transparent')
+    },
+    afterHide: function() {
+      var menu = $('#menu svg')
+      menu.addClass('transition')
+      menu.on('transitionend', function() {
+        menu.removeClass('transition')
+        menu.off('transitionend')
+      })
+
+      menu.css('display', 'block')
+      setTimeout(function() {
+        menu.removeClass('transparent')
+      }, 10)
+    }
+  })
+
+  // plusminus.subscribe();
 }
 
 $(document).ready(initIndex)
