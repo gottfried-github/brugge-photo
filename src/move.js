@@ -12,7 +12,7 @@ function Move(el, triggerer, evttolisten) {
 
   this.element = el;
   this.listenerElement = this.element; // < the "false" case is for further modification
-  this.triggerer = triggerer;
+  this.triggerer = triggerer.$el;
   this.triggererCb = function() {};
 
   this.pepMuted = false;
@@ -24,11 +24,11 @@ function Move(el, triggerer, evttolisten) {
     this.onUnaryScale = function(ev) {
 
       if (!self.movementMuted) {
-        triggerer.off(evttolisten);
+        triggerer.$el.off(evttolisten);
         self.unaryScale(ev)
       }
     };
-    this.refreshTriggerer(this.triggerer);
+    this.refreshTriggerer(this.triggerer, triggerer.cb);
 
     var count = 0;
     var fuckyou = 0;
@@ -254,13 +254,13 @@ function Move(el, triggerer, evttolisten) {
     this.setConstraints(this.coordinates);
     this.setMatrix(this.coordinates);
     this.setOrigin(this.coordinates.originX, this.coordinates.originY);
-    this.setOffset();
+    this.setOffset()
     if (this.coordinates.scaleX > 1.5 || this.coordinates.scaleX < 0.7) {
       this.scaledUp = true;
     } else if (this.coordinates.scaleX < 1.5 && this.coordinates.scaleX > 0.7) {
       this.scaledUp = false;
     }
-    triggerer.on(evttolisten, this.triggererCb);
+    triggerer.$el.on(evttolisten, this.triggererCb);
     // console.log('afterStop', this.coordinates)
     $.pep.toggleAll(true);
   }

@@ -478,7 +478,7 @@ var LargeView = {
 }
 
 var plusminus = {
-  v: $('#scale_triggerer sign-path_v-svg'),
+  v: $('#scale_triggerer .sign-path_v-svg'),
   scaledUp: false,
   subscribe: function() {
     var self = this;
@@ -494,6 +494,7 @@ var plusminus = {
     })
 
     this.v.addClass("scale-v");
+    console.log('scaleUp', this.v)
   },
   scaleDown: function() {
     var self = this;
@@ -503,6 +504,7 @@ var plusminus = {
     })
 
     this.v.removeClass("scale-v");
+    console.log('scaleDown', this)
   },
   do: function() {
     if (!this.scaledUp) {
@@ -623,11 +625,17 @@ function initIndex() {
       Menu.unsubscribe();
     }
   }
+  var triggerer = {
+    $el: $('#scale_triggerer'),
+    cb: function() {
+      plusminus.do();
+    }
+  }
 
-  var move = new Move(dom.$photo, $('#scale_triggerer'), 'click touchend');
+  var move = new Move(dom.$photo, triggerer, 'click touchend');
 
   LargeView.init(dom, open, close, move)
-  plusminus.subscribe();
+  // plusminus.subscribe();
 }
 
 $(document).ready(initIndex)
