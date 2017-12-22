@@ -82,6 +82,7 @@ var Slider = {
     this.period = period;
     this.slots.a.addClass('ztop');
     this.slots.a.addClass('transition');
+    this.slots.b.removeClass('transparent')
 
 
     var self = this;
