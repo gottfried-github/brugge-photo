@@ -255,6 +255,11 @@ function Move(el, triggerer, evttolisten) {
     this.setMatrix(this.coordinates);
     this.setOrigin(this.coordinates.originX, this.coordinates.originY);
     this.setOffset();
+    if (this.coordinates.scaleX > 1.5 || this.coordinates.scaleX < 0.7) {
+      this.scaledUp = true;
+    } else if (this.coordinates.scaleX < 1.5 && this.coordinates.scaleX > 0.7) {
+      this.scaledUp = false;
+    }
     triggerer.on(evttolisten, this.triggererCb);
     // console.log('afterStop', this.coordinates)
     $.pep.toggleAll(true);
@@ -264,9 +269,11 @@ function Move(el, triggerer, evttolisten) {
     var self = this;
     this.easingData.scale.value = this.coordinates.scaleX * 10;
     if (this.coordinates.scaleX > 1.5 || this.coordinates.scaleX < 0.7) {
+      this.scaledUp = true;
       this.easingData.scale.target = 10;
     } else if (this.coordinates.scaleX < 1.5 && this.coordinates.scaleX > 0.7) {
-      this.easingData.scale.target = 30;
+      this.scaledUp = false;
+      this.easingData.scale.target = 23;
     }
     this.scaleStart(ev);
 

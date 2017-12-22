@@ -410,7 +410,7 @@ var LargeView = {
     this.dom.$box.on('transitionend', function() {
       self.dom.$box.off('transitionend');
       self.dom.$box.addClass('noned');
-      self.close.$button.off('click touchend');
+      self.close.$button.off('click');
       self.close.subscribe.call(self.close.$button);
       // self.cbs.onhide();
     });
@@ -478,9 +478,41 @@ var LargeView = {
 }
 
 var plusminus = {
-  v: $('#scale_triggerer'),
-  minus: function() {
+  v: $('#scale_triggerer sign-path_v-svg'),
+  scaledUp: false,
+  subscribe: function() {
+    var self = this;
+    $('#scale_triggerer').on('click', function() {
+      self.do.call(self)
+    })
+  },
+  scaleUp: function() {
+    var self = this;
+    this.v.on('transitionend', function() {
+      self.scaledUp = true;
+      self.v.off('transitionend')
+    })
 
+    this.v.addClass("scale-v");
+  },
+  scaleDown: function() {
+    var self = this;
+    this.v.on('transitionend', function() {
+      self.scaledUp = false;
+      self.v.off('transitionend')
+    })
+
+    this.v.removeClass("scale-v");
+  },
+  do: function() {
+    if (!this.scaledUp) {
+      this.scaleUp();
+    } else if (this.scaledUp) {
+      this.scaleDown();
+    }
+  },
+  reset: function() {
+    this.scaledUp = false;
   }
 }
 
@@ -587,6 +619,7 @@ function initIndex() {
       Menu.subscribe();
     },
     unsubscribe: function() {
+      plusminus.reset();
       Menu.unsubscribe();
     }
   }
@@ -594,6 +627,7 @@ function initIndex() {
   var move = new Move(dom.$photo, $('#scale_triggerer'), 'click touchend');
 
   LargeView.init(dom, open, close, move)
+  plusminus.subscribe();
 }
 
 $(document).ready(initIndex)
