@@ -671,4 +671,4 @@ function initIndex() {
   // plusminus.subscribe();
 }
 
-$(document).ready(initIndex)
+$(window).load(initIndex)
