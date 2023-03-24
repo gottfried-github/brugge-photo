@@ -31,7 +31,7 @@ function Move(el, triggerer, evttolisten) {
     this.refreshTriggerer(this.triggerer, triggerer.cb);
 
     var count = 0;
-    var fuckyou = 0;
+    var noname = 0;
     var evts = [];
     var log = '!'
     var togggle = true;
